@@ -84,7 +84,6 @@ class PhotoDetailsActivity : BaseActivity() {
                 return false
             }
         }).into(photoImageView)
-        Glide.with(this).load(photoUrlFull).into(photoImageView)
 
         fullScreenButton.setOnClickListener {
             Navigation.startPhotoFullActivity(photoImageView, this, photoUrlFull)
