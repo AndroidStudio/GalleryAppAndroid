@@ -1,0 +1,93 @@
+apply plugin: 'com.android.application'
+apply plugin: 'kotlin-android'
+apply plugin: 'kotlin-android-extensions'
+apply plugin: "kotlin-kapt"
+
+android {
+    compileSdkVersion 28
+    defaultConfig {
+        applicationId "ftd.recruitment"
+        minSdkVersion 21
+        targetSdkVersion 28
+        versionCode 1
+        versionName "1.0"
+        testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
+    }
+    buildTypes {
+        debug {
+            minifyEnabled false
+            proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
+        }
+        release {
+            minifyEnabled true
+            proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
+        }
+    }
+}
+
+dependencies {
+    implementation fileTree(dir: 'libs', include: ['*.jar'])
+    implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk7:$kotlin_version"
+
+    /*androidx*/
+    implementation 'androidx.appcompat:appcompat:1.0.2'
+    implementation 'androidx.core:core-ktx:1.0.1'
+    implementation 'androidx.recyclerview:recyclerview:1.0.0'
+    implementation 'androidx.constraintlayout:constraintlayout:1.1.3'
+
+    /*material design*/
+    implementation 'com.google.android.material:material:1.1.0-alpha04'
+
+    /*timber*/
+    implementation 'com.jakewharton.timber:timber:4.7.1'
+
+    /*dagger2*/
+    implementation "com.google.dagger:dagger:2.16"
+    implementation "com.google.dagger:dagger-android:2.16"
+    implementation "com.google.dagger:dagger-android-support:2.16"
+
+    kapt "com.google.dagger:dagger-android-processor:2.16"
+    kapt "com.google.dagger:dagger-android-support:2.16"
+    kapt "com.google.dagger:dagger-compiler:2.16"
+
+    /*mvvm*/
+    implementation "androidx.lifecycle:lifecycle-extensions:2.0.0"
+
+    /*gson*/
+    implementation "com.google.code.gson:gson:2.8.2"
+
+    /*rxjava*/
+    implementation "io.reactivex.rxjava2:rxjava:2.2.7"
+    implementation "io.reactivex.rxjava2:rxandroid:2.1.1"
+
+    /*retrofit*/
+    implementation "com.squareup.retrofit2:retrofit:2.5.0"
+    implementation "com.squareup.retrofit2:adapter-rxjava2:2.5.0"
+
+    /*api logs*/
+    implementation "com.github.ihsanbal:LoggingInterceptor:2.0.5"
+
+    /*room persistence*/
+    implementation "android.arch.persistence.room:runtime:1.1.1"
+    implementation "android.arch.persistence.room:rxjava2:1.1.1"
+    kapt "android.arch.persistence.room:compiler:1.1.1"
+
+    /*http://facebook.github.io/stetho/*/
+    implementation "com.facebook.stetho:stetho:1.5.1"
+
+    /*glide*/
+    implementation 'com.github.bumptech.glide:glide:4.9.0'
+    implementation 'com.github.bumptech.glide:okhttp3-integration:4.9.0'
+    kapt 'com.github.bumptech.glide:compiler:4.9.0'
+
+    /*photo zoom*/
+    implementation 'com.github.chrisbanes:PhotoView:2.0.0'
+
+    /*testing*/
+    testImplementation 'junit:junit:4.12'
+    androidTestImplementation 'androidx.test:rules:1.1.1'
+    androidTestImplementation 'org.hamcrest:hamcrest-library:1.3'
+    androidTestImplementation 'androidx.test:runner:1.1.2-alpha02'
+    androidTestImplementation 'androidx.test.espresso:espresso-core:3.2.0-alpha02'
+    androidTestImplementation 'org.mockito:mockito-android:2.24.5'
+}

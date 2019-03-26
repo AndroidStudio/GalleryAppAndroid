@@ -1,0 +1,11 @@
+<resources>
+    <string name="app_name">FDT Zadanie rekrutacyjne</string>
+    <string name="detils">DETILS</string>
+    <string name="photoList">Photo list</string>
+    <string name="photoDetails">Photo details</string>
+    <string name="full_screen_photo">Full screen photo</string>
+    <string name="message">Message</string>
+    <string name="show_in_full_screen">Show in full screen</string>
+    <string name="error_loading_photo_details">Unable to download photo details</string>
+    <string name="details">DETILS</string>
+</resources>
