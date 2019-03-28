@@ -1,12 +1,12 @@
 package fdt.galleryapp.webservice
 
 import android.content.Context
-import android.net.ConnectivityManager
 import com.ihsanbal.logging.Level
 import com.ihsanbal.logging.LoggingInterceptor
 import fdt.galleryapp.BuildConfig
 import fdt.galleryapp.constants.API_KEY
 import fdt.galleryapp.constants.BASE_URL
+import fdt.galleryapp.utils.connectivityManager
 import io.reactivex.Single
 import io.reactivex.functions.BiFunction
 import okhttp3.Interceptor
@@ -19,16 +19,12 @@ import retrofit2.adapter.rxjava2.RxJava2CallAdapterFactory
 import java.util.concurrent.TimeUnit
 import javax.inject.Inject
 
-open class WebService @Inject constructor(context: Context) {
+open class WebService @Inject constructor(private val context: Context) {
 
     private val retrofit = Retrofit.Builder().baseUrl(BASE_URL)
         .client(createOkHttpClient())
         .addCallAdapterFactory(RxJava2CallAdapterFactory.create())
         .build()
-
-    private val connectivityManager =
-        context.getSystemService(Context.CONNECTIVITY_SERVICE)
-                as ConnectivityManager
 
     fun <T> request(api: Class<T>, repo: (T) -> Single<Response<ResponseBody>>): Single<String> {
         val request = repo(retrofit.create(api))
@@ -74,7 +70,7 @@ open class WebService @Inject constructor(context: Context) {
 
     private fun checkInternetConnection(): Single<Boolean> {
         return Single.create {
-            val activeNetwork = connectivityManager.activeNetworkInfo
+            val activeNetwork = context.connectivityManager?.activeNetworkInfo
             if (activeNetwork != null && activeNetwork.isConnected) {
                 it.onSuccess(true)
             } else {

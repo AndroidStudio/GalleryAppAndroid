@@ -4,7 +4,6 @@ import android.view.View
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.ActivityOptionsCompat
 import fdt.galleryapp.constants.*
-import fdt.galleryapp.launchActivity
 import fdt.galleryapp.ui.activities.FullPhotoActivity
 import fdt.galleryapp.ui.activities.PhotoDetailsActivity
 import fdt.galleryapp.ui.activities.PhotoListActivity

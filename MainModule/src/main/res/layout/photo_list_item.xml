@@ -27,11 +27,13 @@
             app:layout_constraintStart_toStartOf="@+id/guideline3"
             app:layout_constraintTop_toTopOf="parent" />
 
-        <TextView
+        <androidx.appcompat.widget.AppCompatTextView
             android:id="@+id/titleTextView"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_marginEnd="8dp"
+            android:includeFontPadding="false"
+            android:lineSpacingExtra="0dp"
             android:maxLines="1"
             android:textColor="@color/titleColor"
             android:textSize="20dp"
@@ -40,21 +42,16 @@
             app:layout_constraintStart_toStartOf="@+id/guideline4"
             tools:text="Title" />
 
-        <ImageView
-            android:id="@+id/photoImageView"
-            android:layout_width="match_parent"
-            android:layout_height="190dp"
-            android:layout_marginTop="72dp"
-            android:transitionName="photo_image"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent" />
-
-        <TextView
+        <androidx.appcompat.widget.AppCompatTextView
             android:id="@+id/locationTextView"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:includeFontPadding="false"
+            android:lineSpacingExtra="0dp"
             android:maxLines="1"
+            android:lines="1"
+            android:singleLine="true"
+            android:foregroundGravity="bottom"
             android:textColor="@color/grayColor"
             android:textSize="14dp"
             app:layout_constraintBottom_toTopOf="@+id/guideline"
@@ -74,6 +71,16 @@
             android:layout_height="wrap_content"
             android:orientation="horizontal"
             app:layout_constraintGuide_begin="34dp" />
+
+        <ImageView
+            android:id="@+id/photoImageView"
+            android:layout_width="match_parent"
+            android:layout_height="190dp"
+            android:layout_marginTop="72dp"
+            android:transitionName="photo_image"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
 
         <TextView
             android:id="@+id/descriptionTextView"
