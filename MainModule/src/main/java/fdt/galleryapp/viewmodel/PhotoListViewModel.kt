@@ -4,7 +4,7 @@ import android.app.Application
 import fdt.galleryapp.FDTApplication
 import fdt.galleryapp.entities.PhotoEntity
 import fdt.galleryapp.models.PhotoModel
-import fdt.galleryapp.repository.local.LocalRepository
+import fdt.galleryapp.repository.local.PhotoDatabase
 import fdt.galleryapp.repository.remote.RemoteRepository
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.schedulers.Schedulers
@@ -16,7 +16,7 @@ class PhotoListViewModel(application: Application) : BaseViewModel(application) 
     lateinit var remoteRepository: RemoteRepository
 
     @Inject
-    lateinit var localRepository: LocalRepository
+    lateinit var photoDatabase: PhotoDatabase
 
     init {
         FDTApplication.appComponent.inject(this)
@@ -27,7 +27,7 @@ class PhotoListViewModel(application: Application) : BaseViewModel(application) 
      * */
     fun getPhotoListLocal(onSuccess: (List<PhotoEntity>) -> Unit) {
         addDisposable(
-            localRepository.query().getPhotoList()
+            photoDatabase.query().getPhotoList()
                 .observeOn(AndroidSchedulers.mainThread()).subscribe(onSuccess)
         )
     }
@@ -65,6 +65,6 @@ class PhotoListViewModel(application: Application) : BaseViewModel(application) 
             )
         }
 
-        localRepository.query().insertPhotoList(list)
+        photoDatabase.query().insertPhotoList(list)
     }
 }

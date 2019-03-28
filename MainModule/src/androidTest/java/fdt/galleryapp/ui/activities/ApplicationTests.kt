@@ -1,7 +1,10 @@
 package fdt.galleryapp.ui.activities
 
+import android.content.Context
 import android.content.Intent
 import androidx.appcompat.widget.Toolbar
+import androidx.room.Room
+import androidx.test.core.app.ApplicationProvider
 import androidx.test.espresso.Espresso
 import androidx.test.espresso.Espresso.onView
 import androidx.test.espresso.action.ViewActions.click
@@ -18,12 +21,21 @@ import androidx.test.espresso.matcher.ViewMatchers.*
 import androidx.test.rule.ActivityTestRule
 import fdt.galleryapp.R
 import fdt.galleryapp.constants.*
+import fdt.galleryapp.entities.PhotoEntity
+import fdt.galleryapp.repository.local.DatabaseQuery
+import fdt.galleryapp.repository.local.PhotoDatabase
 import fdt.galleryapp.ui.adapters.UserPhotoListAdapter
 import org.hamcrest.CoreMatchers.allOf
+import org.hamcrest.Matchers.equalTo
+import org.junit.After
+import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
 
 class ApplicationTests {
+
+    private lateinit var photoDatabase: PhotoDatabase
+    private lateinit var query: DatabaseQuery
 
     @get:Rule
     val userPhotoListActivityRule = ActivityTestRule(
@@ -36,6 +48,38 @@ class ApplicationTests {
         PhotoDetailsActivity::class.java,
         true, false
     )
+
+    @Before
+    fun createDb() {
+        val context = ApplicationProvider.getApplicationContext<Context>()
+        photoDatabase = Room.inMemoryDatabaseBuilder(context, PhotoDatabase::class.java).build()
+        query = photoDatabase.query()
+    }
+
+    @After
+    fun closeDb() {
+        photoDatabase.close()
+    }
+
+    @Test
+    fun testSavePhotoAndReadPhotoList() {
+        val photoList = mutableListOf(
+            PhotoEntity(
+                "id", "", "", "",
+                "", "", "", "", "", "", "",
+                0, 0
+            ),
+            PhotoEntity(
+                "id", "", "", "",
+                "", "", "", "", "", "", "",
+                0, 0
+            )
+        )
+        query.insertPhotoList(photoList)
+
+        val list = query.getPhotoList().blockingFirst()
+        assertThat(list[0].id, equalTo(photoList[0].id))
+    }
 
     @Test
     fun testUserPhotoListToolbarTitle() {
@@ -95,7 +139,7 @@ class ApplicationTests {
         val intent = Intent()
         intent.putExtra(PHOTO_ID, "test")
         intent.putExtra(PHOTO_URL_FULL, "test")
-        val url :String? = null
+        val url: String? = null
         intent.putExtra(PHOTO_URL, url)
         intent.putExtra(PHOTO_HEIGHT, 100)
         intent.putExtra(PHOTO_WIDTH, 100)
