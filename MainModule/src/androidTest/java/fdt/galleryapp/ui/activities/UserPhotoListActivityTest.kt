@@ -1,11 +1,11 @@
 package fdt.galleryapp.ui.activities
 
 import android.content.Intent
-import androidx.test.espresso.Espresso
+import androidx.appcompat.widget.Toolbar
+import androidx.test.espresso.Espresso.onView
 import androidx.test.espresso.assertion.ViewAssertions.matches
 import androidx.test.espresso.matcher.ViewMatchers.*
 import androidx.test.rule.ActivityTestRule
-import fdt.galleryapp.R
 import fdt.galleryapp.constants.USER_FIRST_NAME
 import fdt.galleryapp.constants.USER_LAST_NAME
 import fdt.galleryapp.constants.USER_NAME
@@ -42,6 +42,7 @@ class UserPhotoListActivityTest {
 
         activityTestRule.launchActivity(intent)
 
-        Espresso.onView(withId(R.id.toolbar)).check(matches(hasDescendant(withText("FROM JANEK KOWALSKI"))))
+        onView(isAssignableFrom(Toolbar::class.java))
+            .check(matches(hasDescendant(withText("FROM JANEK KOWALSKI"))))
     }
 }

@@ -16,8 +16,4 @@ interface DatabaseQuery {
 
     @Query("SELECT * FROM photo_entity")
     fun getPhotoList(): Flowable<List<PhotoEntity>>
-
-    @Query("SELECT * FROM photo_entity WHERE id =:photoId")
-    fun getPhotoById(photoId: String): Single<PhotoEntity>
-
 }
