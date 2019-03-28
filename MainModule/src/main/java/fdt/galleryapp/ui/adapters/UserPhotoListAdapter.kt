@@ -52,7 +52,7 @@ class UserPhotoListAdapter(private var context: AppCompatActivity) :
             itemView.photoImageView.layoutParams = RelativeLayout.LayoutParams(
                 RelativeLayout.LayoutParams.MATCH_PARENT, height
             )
-            itemView.setOnClickListener { startPhotoDetailsActivity(model) }
+            itemView.photoImageView.setOnClickListener { startPhotoDetailsActivity(model) }
 
             Glide.with(context)
                 .load(model.urlsModel.small)

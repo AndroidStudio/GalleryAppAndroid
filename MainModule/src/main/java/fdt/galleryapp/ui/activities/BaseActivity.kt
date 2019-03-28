@@ -14,14 +14,18 @@ abstract class BaseActivity : AppCompatActivity() {
         super.onPostCreate(savedInstanceState)
         setSupportActionBar(toolbar)
         toolbar.title = getToolbarTitle()
-        showBackButton(false)
+        displayBackButton()
     }
 
-    open fun showBackButton(show: Boolean) {
-        if (show) {
+    private fun displayBackButton() {
+        if (inBackArrowEnabled()) {
             supportActionBar?.setDisplayHomeAsUpEnabled(true)
             supportActionBar?.setDisplayShowHomeEnabled(true)
         }
+    }
+
+    open fun inBackArrowEnabled(): Boolean {
+        return true
     }
 
     override fun onSupportNavigateUp(): Boolean {
@@ -31,7 +35,7 @@ abstract class BaseActivity : AppCompatActivity() {
 
     abstract fun getToolbarTitle(): String
 
-    open fun showMessage(message: String?) {
+    open fun showErrorMessage(message: String?) {
         val builder: AlertDialog.Builder? = AlertDialog.Builder(this)
         builder?.setMessage(message)
         builder?.setTitle(R.string.message)

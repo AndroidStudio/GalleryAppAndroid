@@ -54,8 +54,4 @@ class FullPhotoActivity : BaseActivity() {
     override fun getToolbarTitle(): String {
         return getString(R.string.full_screen_photo).toUpperCase()
     }
-
-    override fun showBackButton(show: Boolean) {
-        super.showBackButton(true)
-    }
 }

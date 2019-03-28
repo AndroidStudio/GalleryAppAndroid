@@ -1,21 +1,17 @@
 package fdt.galleryapp.ui.activities
 
 import android.graphics.Color
-import android.graphics.drawable.Drawable
 import android.os.Bundle
 import android.view.View
 import android.widget.LinearLayout
 import androidx.lifecycle.ViewModelProviders
 import com.bumptech.glide.Glide
-import com.bumptech.glide.load.DataSource
-import com.bumptech.glide.load.engine.GlideException
-import com.bumptech.glide.request.RequestListener
-import com.bumptech.glide.request.target.Target
 import fdt.galleryapp.R
 import fdt.galleryapp.constants.*
 import fdt.galleryapp.models.PhotoModel
 import fdt.galleryapp.utils.Navigation
 import fdt.galleryapp.utils.device.Device
+import fdt.galleryapp.utils.getExtra
 import fdt.galleryapp.viewmodel.PhotoDetailsViewModel
 import kotlinx.android.synthetic.main.photo_details_activity.*
 import kotlinx.android.synthetic.main.toolbar.*
@@ -29,20 +25,41 @@ class PhotoDetailsActivity : BaseActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.photo_details_activity)
-        getPhotoDetails()
-        updatePhotoImage()
         toolbar.setBackgroundColor(Color.parseColor("#50000000"))
+        getPhotoDetails()
     }
 
     private fun getPhotoDetails() {
-        val photoId = intent?.extras?.getString(PHOTO_ID)
-        if (photoId == null) {
-            showMessage(getString(R.string.error_loading_photo_details))
+        val photoId = getExtra<String>(PHOTO_ID)
+        val photoUrlFull = getExtra<String>(PHOTO_URL_FULL)
+        val photoUrl = getExtra<String>(PHOTO_URL)
+        val photoWidth = getExtra<Int>(PHOTO_WIDTH)
+        val photoHeight = getExtra<Int>(PHOTO_HEIGHT)
+
+        if (photoId == null
+            || photoUrlFull == null
+            || photoUrl == null
+            || photoHeight == null
+            || photoWidth == null
+            || photoWidth == 0
+            ) {
+            showErrorMessage(getString(R.string.unable_to_display_photo_details))
             return
         }
-        photoDetailsViewModel.getPhotoDetails(
-            photoId, ::updatePhotoDetails, ::onError
-        )
+
+        val destHeight = Device.getScreenWidth(this) * photoHeight / photoWidth
+
+        photoImageView.layoutParams = LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, destHeight)
+        Glide.with(this).load(photoUrl).into(photoImageView)
+
+        fullScreenButton.setOnClickListener {
+            Navigation.startPhotoFullActivity(photoImageView, this, photoUrlFull)
+        }
+        getPhotoDetailsRemote(photoId)
+    }
+
+    private fun getPhotoDetailsRemote(photoId: String) {
+        photoDetailsViewModel.getPhotoDetails(photoId, ::updatePhotoDetails, ::onError)
     }
 
     private fun updatePhotoDetails(photoModel: PhotoModel) {
@@ -60,50 +77,16 @@ class PhotoDetailsActivity : BaseActivity() {
         progressBar.visibility = View.GONE
     }
 
-    private fun updatePhotoImage() {
-        val photoUrlFull = intent?.extras?.getString(PHOTO_URL_FULL) ?: ""
-        val photoUrl = intent?.extras?.getString(PHOTO_URL) ?: ""
-
-        val srcWidth = intent?.extras?.getInt(PHOTO_WIDTH) ?: 0
-        val srcHeight = intent?.extras?.getInt(PHOTO_HEIGHT) ?: 0
-
-        val destHeight = Device.getScreenWidth(this) * srcHeight / srcWidth
-
-        photoImageView.layoutParams = LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, destHeight)
-        Glide.with(this).load(photoUrl).listener(object : RequestListener<Drawable> {
-            override fun onLoadFailed(
-                e: GlideException?, model: Any, target: Target<Drawable>, isFirstResource: Boolean
-            ): Boolean {
-                return false
-            }
-
-            override fun onResourceReady(
-                resource: Drawable, model: Any, target: Target<Drawable>,
-                dataSource: DataSource, isFirstResource: Boolean
-            ): Boolean {
-                return false
-            }
-        }).into(photoImageView)
-
-        fullScreenButton.setOnClickListener {
-            Navigation.startPhotoFullActivity(photoImageView, this, photoUrlFull)
-        }
-    }
-
     /**
      * Error loading photo details
      * */
     private fun onError(throwable: Throwable) {
         progressBar.visibility = View.GONE
-        showMessage(throwable.message)
+        showErrorMessage(throwable.message)
         throwable.printStackTrace()
     }
 
     override fun getToolbarTitle(): String {
         return getString(R.string.photoDetails).toUpperCase()
-    }
-
-    override fun showBackButton(show: Boolean) {
-        super.showBackButton(true)
     }
 }

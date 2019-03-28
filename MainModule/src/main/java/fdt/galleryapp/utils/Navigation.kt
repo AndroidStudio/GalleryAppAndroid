@@ -18,7 +18,7 @@ class Navigation {
             photoId: String,
             photoUrlFull: String?,
             photoUrl: String?,
-            photoWidth: Int?,
+            photoWidth: Int,
             photoHeight: Int
         ) {
             context.launchActivity(

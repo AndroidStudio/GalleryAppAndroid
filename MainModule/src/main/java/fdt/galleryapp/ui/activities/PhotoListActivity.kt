@@ -43,12 +43,16 @@ class PhotoListActivity : BaseActivity() {
     private fun loadPhotosRemote() {
         photoListViewModel.getPhotoListRemote {
             progressBar.visibility = View.GONE
-            showMessage(it.message)
+            showErrorMessage(it.message)
             it.printStackTrace()
         }
     }
 
     override fun getToolbarTitle(): String {
         return getString(fdt.galleryapp.R.string.photoList).toUpperCase()
+    }
+
+    override fun inBackArrowEnabled(): Boolean {
+        return false
     }
 }

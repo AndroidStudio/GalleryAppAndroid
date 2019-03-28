@@ -11,6 +11,7 @@ import fdt.galleryapp.constants.USER_LAST_NAME
 import fdt.galleryapp.constants.USER_NAME
 import fdt.galleryapp.models.PhotoModel
 import fdt.galleryapp.ui.adapters.UserPhotoListAdapter
+import fdt.galleryapp.utils.getExtra
 import fdt.galleryapp.viewmodel.UserPhotoListViewModel
 import kotlinx.android.synthetic.main.user_photo_list_activity.*
 
@@ -20,11 +21,19 @@ class UserPhotoListActivity : BaseActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.user_photo_list_activity)
-        val model = ViewModelProviders.of(this).get(UserPhotoListViewModel::class.java)
-
         recyclerView.layoutManager = StaggeredGridLayoutManager(2, RecyclerView.VERTICAL)
         recyclerView.adapter = userPhotoListAdapter
-        model.getUserPhotoList(getUserName(), ::updateUserPhotoList, ::loadUserPhotoListError)
+        loadUserPhotoList()
+    }
+
+    private fun loadUserPhotoList() {
+        val model = ViewModelProviders.of(this).get(UserPhotoListViewModel::class.java)
+        val userName = getExtra<String>(USER_NAME)
+        if (!userName.isNullOrEmpty()) {
+            model.getUserPhotoList(userName, ::updateUserPhotoList, ::loadUserPhotoListError)
+        } else {
+            showErrorMessage(getString(R.string.incorrect_user_name))
+        }
     }
 
     private fun updateUserPhotoList(mutableList: MutableList<PhotoModel>) {
@@ -36,21 +45,13 @@ class UserPhotoListActivity : BaseActivity() {
 
     private fun loadUserPhotoListError(throwable: Throwable) {
         progressBar.visibility = View.GONE
-        showMessage(throwable.message)
+        showErrorMessage(throwable.message)
         throwable.printStackTrace()
-    }
-
-    private fun getUserName(): String {
-        return intent?.extras?.getString(USER_NAME) ?: ""
     }
 
     override fun getToolbarTitle(): String {
         return "FROM ${intent?.extras?.getString(USER_FIRST_NAME) ?: ""} ${intent?.extras?.getString(USER_LAST_NAME)
             ?: ""}"
             .toUpperCase()
-    }
-
-    override fun showBackButton(show: Boolean) {
-        super.showBackButton(true)
     }
 }
