@@ -20,6 +20,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:adjustViewBounds="true"
+                android:importantForAccessibility="no"
                 android:transitionName="photo_image" />
 
             <LinearLayout
@@ -40,7 +41,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:textColor="@color/titleColor"
-                    android:textSize="20dp" />
+                    android:textSize="20sp" />
 
                 <View
                     android:layout_width="match_parent"
@@ -53,7 +54,7 @@
                     android:id="@+id/descriptionTextView"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:textSize="14dp" />
+                    android:textSize="14sp" />
 
                 <View
                     android:layout_width="match_parent"
@@ -66,7 +67,7 @@
                     android:id="@+id/photoDetailsTextView"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:textSize="14dp" />
+                    android:textSize="14sp" />
 
                 <RelativeLayout
                     android:layout_width="match_parent"
