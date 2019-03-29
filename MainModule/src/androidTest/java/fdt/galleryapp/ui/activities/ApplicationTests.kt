@@ -94,7 +94,7 @@ class ApplicationTests {
 
     @Test
     fun testIncorrectJSON() {
-        val response = "incorect json"
+        val response = "incorrect json"
         Mockito.`when`(webService.request(any())).thenReturn(Single.just(response))
 
         expectedException.expect(JsonSyntaxException::class.java)
@@ -140,7 +140,7 @@ class ApplicationTests {
         userPhotoListActivityRule.launchActivity(null)
         Thread.sleep(1000)
 
-        onView(withText(R.string.incorrect_user_name))
+        onView(withText(R.string.incorrectUserName))
             .inRoot(isDialog())
             .check(matches(isDisplayed()))
     }
@@ -186,7 +186,7 @@ class ApplicationTests {
         photoDetailsActivityRule.launchActivity(intent)
         Thread.sleep(1000)
 
-        onView(ViewMatchers.withText(R.string.unable_to_display_photo_details))
+        onView(ViewMatchers.withText(R.string.unableToDisplayPhotoDetails))
             .inRoot(RootMatchers.isDialog())
             .check(ViewAssertions.matches(ViewMatchers.isDisplayed()))
     }

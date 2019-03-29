@@ -7,7 +7,7 @@
     <include layout="@layout/toolbar" />
 
     <com.github.chrisbanes.photoview.PhotoView
-        android:background="#222222"
+        android:background="@color/photoViewBgColor"
         android:id="@+id/photoImageView"
         android:layout_width="match_parent"
         android:layout_height="match_parent"

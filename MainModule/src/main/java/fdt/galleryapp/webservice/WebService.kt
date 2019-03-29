@@ -1,6 +1,7 @@
 package fdt.galleryapp.webservice
 
 import android.content.Context
+import fdt.galleryapp.R
 import fdt.galleryapp.repository.remote.RemoteRepository
 import fdt.galleryapp.utils.connectivityManager
 import io.reactivex.Single
@@ -23,7 +24,7 @@ open class WebService @Inject constructor(private val context: Context, private 
             if (activeNetwork != null && activeNetwork.isConnected) {
                 it.onSuccess(true)
             } else {
-                it.onError(Exception("No internet connection"))
+                it.onError(Exception(context.getString(R.string.noInternetConnection)))
             }
         }
     }
@@ -35,7 +36,7 @@ open class WebService @Inject constructor(private val context: Context, private 
                 val response = body.string()
                 it.onSuccess(response)
             } else {
-                it.onError(Exception("Connection error... code:${responseBody.code()}"))
+                it.onError(Exception(context.getString(R.string.connectionError)+responseBody.code()))
             }
         }
     }

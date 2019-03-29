@@ -34,7 +34,7 @@
                     style="@style/Widget.MaterialComponents.Button.OutlinedButton"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:text="@string/show_in_full_screen" />
+                    android:text="@string/showInFullScreen" />
 
                 <TextView
                     android:id="@+id/nameTextView"
@@ -48,7 +48,7 @@
                     android:layout_height="1dp"
                     android:layout_marginTop="10dp"
                     android:layout_marginBottom="10dp"
-                    android:background="#d2d2d2" />
+                    android:background="@color/lightGray" />
 
                 <TextView
                     android:id="@+id/descriptionTextView"
@@ -61,7 +61,7 @@
                     android:layout_height="1dp"
                     android:layout_marginTop="10dp"
                     android:layout_marginBottom="10dp"
-                    android:background="#d2d2d2" />
+                    android:background="@color/lightGray" />
 
                 <TextView
                     android:id="@+id/photoDetailsTextView"

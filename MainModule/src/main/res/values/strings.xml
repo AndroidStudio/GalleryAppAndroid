@@ -1,12 +1,16 @@
 <resources>
-    <string name="app_name">GalleryApp</string>
+    <string name="appName">GalleryApp</string>
     <string name="photoList">Photo list</string>
     <string name="photoDetails">Photo details</string>
-    <string name="full_screen_photo">Full screen photo</string>
-    <string name="message">Message</string>
-    <string name="show_in_full_screen">Show in full screen</string>
-    <string name="unable_to_display_photo_details">Unable to display photo details</string>
+    <string name="fullScreenPhoto">Full screen photo</string>
+    <string name="dialogTitle">Message</string>
+    <string name="showInFullScreen">Show in full screen</string>
+    <string name="unableToDisplayPhotoDetails">Unable to display photo details</string>
     <string name="details">Details</string>
     <string name="splash">SPLASH</string>
-    <string name="incorrect_user_name">Incorrect username</string>
+    <string name="incorrectUserName">Incorrect username</string>
+    <string name="ok">OK</string>
+    <string name="from">FROM</string>
+    <string name="noInternetConnection">No internet connection</string>
+    <string name="connectionError">Connection error… code:</string>
 </resources>

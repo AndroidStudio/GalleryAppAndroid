@@ -1,6 +1,5 @@
 package fdt.galleryapp.ui.activities
 
-import android.graphics.Color
 import android.os.Bundle
 import android.view.View
 import android.widget.LinearLayout
@@ -14,7 +13,6 @@ import fdt.galleryapp.utils.device.Device
 import fdt.galleryapp.utils.getExtra
 import fdt.galleryapp.viewmodel.PhotoDetailsViewModel
 import kotlinx.android.synthetic.main.photo_details_activity.*
-import kotlinx.android.synthetic.main.toolbar.*
 
 class PhotoDetailsActivity : BaseActivity() {
 
@@ -25,7 +23,7 @@ class PhotoDetailsActivity : BaseActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.photo_details_activity)
-        toolbar.setBackgroundColor(Color.parseColor("#50000000"))
+        setToolbarColor(R.color.toolbarColor)
         getPhotoDetails()
     }
 
@@ -43,7 +41,7 @@ class PhotoDetailsActivity : BaseActivity() {
             || photoWidth == null
             || photoWidth == 0
             ) {
-            showErrorMessage(getString(R.string.unable_to_display_photo_details))
+            showErrorMessage(getString(R.string.unableToDisplayPhotoDetails))
             return
         }
 

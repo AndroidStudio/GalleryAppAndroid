@@ -32,7 +32,7 @@ class UserPhotoListActivity : BaseActivity() {
         if (!userName.isNullOrEmpty()) {
             model.getUserPhotoList(userName, ::updateUserPhotoList, ::loadUserPhotoListError)
         } else {
-            showErrorMessage(getString(R.string.incorrect_user_name))
+            showErrorMessage(getString(R.string.incorrectUserName))
         }
     }
 
@@ -50,8 +50,9 @@ class UserPhotoListActivity : BaseActivity() {
     }
 
     override fun getToolbarTitle(): String {
-        return "FROM ${intent?.extras?.getString(USER_FIRST_NAME) ?: ""} ${intent?.extras?.getString(USER_LAST_NAME)
-            ?: ""}"
-            .toUpperCase()
+        val firstName = getExtra<String>(USER_FIRST_NAME) ?: ""
+        val lastName = getExtra<String>(USER_LAST_NAME) ?: ""
+        return getString(R.string.from) + " " + firstName.toUpperCase() + " " + lastName.toUpperCase()
+
     }
 }

@@ -1,7 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <androidx.cardview.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/cardView"
     android:layout_width="match_parent"
     android:layout_height="382dp"
@@ -40,8 +39,7 @@
             android:textSize="20sp"
             app:layout_constraintBottom_toTopOf="@+id/guideline2"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="@+id/guideline4"
-            tools:text="Title" />
+            app:layout_constraintStart_toStartOf="@+id/guideline4" />
 
         <androidx.appcompat.widget.AppCompatTextView
             android:id="@+id/locationTextView"
@@ -56,8 +54,7 @@
             android:textColor="@color/grayColor"
             android:textSize="14sp"
             app:layout_constraintBottom_toTopOf="@+id/guideline"
-            app:layout_constraintStart_toStartOf="@+id/guideline4"
-            tools:text="Location" />
+            app:layout_constraintStart_toStartOf="@+id/guideline4" />
 
         <androidx.constraintlayout.widget.Guideline
             android:id="@+id/guideline"
@@ -96,8 +93,7 @@
             android:textSize="14sp"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="@+id/guideline3"
-            app:layout_constraintTop_toBottomOf="@+id/photoImageView"
-            tools:text="Description" />
+            app:layout_constraintTop_toBottomOf="@+id/photoImageView" />
 
         <com.google.android.material.button.MaterialButton
             android:id="@+id/detailsButton"

@@ -1,6 +1,5 @@
 package fdt.galleryapp.ui.activities
 
-import android.graphics.Color
 import android.graphics.drawable.Drawable
 import android.os.Bundle
 import com.bumptech.glide.Glide
@@ -11,7 +10,6 @@ import com.bumptech.glide.request.target.Target
 import fdt.galleryapp.R
 import fdt.galleryapp.constants.PHOTO_URL_FULL
 import kotlinx.android.synthetic.main.photo_full_activity.*
-import kotlinx.android.synthetic.main.toolbar.*
 
 class FullPhotoActivity : BaseActivity() {
 
@@ -25,7 +23,7 @@ class FullPhotoActivity : BaseActivity() {
                 .listener(loadPhotoListener).into(photoImageView)
         }
 
-        toolbar.setBackgroundColor(Color.parseColor("#50000000"))
+        setToolbarColor(R.color.toolbarColor)
     }
 
     private val loadPhotoListener = object : RequestListener<Drawable> {
@@ -52,6 +50,6 @@ class FullPhotoActivity : BaseActivity() {
     }
 
     override fun getToolbarTitle(): String {
-        return getString(R.string.full_screen_photo).toUpperCase()
+        return getString(R.string.fullScreenPhoto).toUpperCase()
     }
 }

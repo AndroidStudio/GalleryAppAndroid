@@ -1,13 +1,12 @@
 package fdt.galleryapp.ui.activities
 
-import android.annotation.SuppressLint
 import android.os.Bundle
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.content.ContextCompat
 import fdt.galleryapp.R
 import kotlinx.android.synthetic.main.toolbar.*
 
-@SuppressLint("Registered")
 abstract class BaseActivity : AppCompatActivity() {
 
     override fun onPostCreate(savedInstanceState: Bundle?) {
@@ -38,13 +37,17 @@ abstract class BaseActivity : AppCompatActivity() {
     open fun showErrorMessage(message: String?) {
         val builder: AlertDialog.Builder? = AlertDialog.Builder(this)
         builder?.setMessage(message)
-        builder?.setTitle(R.string.message)
+        builder?.setTitle(R.string.dialogTitle)
         builder?.setCancelable(false)
-        builder?.setPositiveButton("OK") { dialog, _ ->
+        builder?.setPositiveButton(getString(R.string.ok)) { dialog, _ ->
             dialog?.dismiss()
             finish()
         }
         val dialog: AlertDialog? = builder?.create()
         dialog?.show()
+    }
+
+    open fun setToolbarColor(color: Int) {
+        toolbar.setBackgroundColor(ContextCompat.getColor(this, color))
     }
 }

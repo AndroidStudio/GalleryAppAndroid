@@ -50,7 +50,7 @@ class PhotoListAdapter(private val context: AppCompatActivity) :
 
         override fun onBind(model: PhotoEntity) {
             itemView.titleTextView.text = String.format("%s %s", model.first_name ?: "", model.last_name ?: "")
-            itemView.fromButton.text = String.format("FROM %s", model.last_name ?: "")
+            itemView.fromButton.text = String.format("%s %s", context.getString(R.string.from), model.last_name ?: "")
             itemView.descriptionTextView.text = model.description
             itemView.locationTextView.text = model.location
 

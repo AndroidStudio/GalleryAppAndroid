@@ -8,4 +8,4 @@
     android:elevation="1dp"
     android:orientation="vertical"
     android:theme="@style/ThemeOverlay.AppCompat.Dark.ActionBar"
-    app:titleTextColor="#FFFFFF" />
+    app:titleTextColor="@android:color/white" />
