@@ -36,7 +36,7 @@ class RemoteRepository @Inject constructor(private var webService: WebService) {
      * Photo list
      * */
     fun getPhotoList(): Single<String> {
-        return webService.request(API::class.java) { it.getPhotoList(30, "popular") }
+        return webService.request { it.getPhotoList(30, "popular") }
     }
 
     fun mapPhotoList(response: String): MutableList<PhotoModel> {
@@ -47,7 +47,7 @@ class RemoteRepository @Inject constructor(private var webService: WebService) {
      * Photo details
      * */
     fun getPhotoDetails(photoId: String): Single<String> {
-        return webService.request(API::class.java) { it.getPhotoDetails(photoId) }
+        return webService.request { it.getPhotoDetails(photoId) }
     }
 
     fun mapPhotoDetails(response: String): PhotoModel {
@@ -58,11 +58,11 @@ class RemoteRepository @Inject constructor(private var webService: WebService) {
      * User photo list
      * */
     fun getUserPhotoList(username: String): Single<String> {
-        return webService.request(API::class.java) { it.getUserPhoto(username, 30, "popular") }
+        return webService.request { it.getUserPhoto(username, 30, "popular") }
     }
 
     fun mapUserPhotoList(response: String): MutableList<PhotoModel> {
         return Gson().fromJson(response, Array<PhotoModel>::class.java).toMutableList()
     }
-
 }
+

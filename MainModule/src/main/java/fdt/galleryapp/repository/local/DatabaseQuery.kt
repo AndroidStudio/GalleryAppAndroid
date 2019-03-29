@@ -6,7 +6,6 @@ import androidx.room.OnConflictStrategy
 import androidx.room.Query
 import fdt.galleryapp.entities.PhotoEntity
 import io.reactivex.Flowable
-import io.reactivex.Single
 
 @Dao
 interface DatabaseQuery {

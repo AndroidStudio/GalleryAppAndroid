@@ -4,13 +4,14 @@ import android.content.Context
 import dagger.BindsInstance
 import dagger.Component
 import fdt.galleryapp.modules.DatabaseModule
+import fdt.galleryapp.modules.NetworkModule
 import fdt.galleryapp.viewmodel.PhotoDetailsViewModel
 import fdt.galleryapp.viewmodel.PhotoListViewModel
 import fdt.galleryapp.viewmodel.UserPhotoListViewModel
 import javax.inject.Singleton
 
 @Singleton
-@Component(modules = [DatabaseModule::class])
+@Component(modules = [DatabaseModule::class, NetworkModule::class])
 interface AppComponent {
 
     @Component.Builder

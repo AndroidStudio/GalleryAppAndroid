@@ -5,7 +5,6 @@ import android.content.Intent
 import androidx.appcompat.widget.Toolbar
 import androidx.room.Room
 import androidx.test.core.app.ApplicationProvider
-import androidx.test.espresso.Espresso
 import androidx.test.espresso.Espresso.onView
 import androidx.test.espresso.action.ViewActions.click
 import androidx.test.espresso.assertion.ViewAssertions
@@ -19,46 +18,87 @@ import androidx.test.espresso.matcher.RootMatchers.isDialog
 import androidx.test.espresso.matcher.ViewMatchers
 import androidx.test.espresso.matcher.ViewMatchers.*
 import androidx.test.rule.ActivityTestRule
+import com.google.gson.JsonSyntaxException
 import fdt.galleryapp.R
 import fdt.galleryapp.constants.*
 import fdt.galleryapp.entities.PhotoEntity
 import fdt.galleryapp.repository.local.DatabaseQuery
 import fdt.galleryapp.repository.local.PhotoDatabase
+import fdt.galleryapp.repository.remote.RemoteRepository
 import fdt.galleryapp.ui.adapters.UserPhotoListAdapter
+import fdt.galleryapp.webservice.WebService
+import io.reactivex.Single
 import org.hamcrest.CoreMatchers.allOf
 import org.hamcrest.Matchers.equalTo
 import org.junit.After
 import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
+import org.junit.rules.ExpectedException
+import org.mockito.Mockito
+import javax.inject.Inject
 
 class ApplicationTests {
 
     private lateinit var photoDatabase: PhotoDatabase
-    private lateinit var query: DatabaseQuery
+    private lateinit var databaseQuery: DatabaseQuery
+
+    @Inject
+    lateinit var remoteRepository: RemoteRepository
+
+    @Inject
+    lateinit var webService: WebService
+
+    /*https://medium.com/@elye.project/befriending-kotlin-and-mockito-1c2e7b0ef791*/
+    private fun <T> any(): T {
+        Mockito.any<T>()
+        return uninitialized()
+    }
+
+    @Suppress("UNCHECKED_CAST")
+    private fun <T> uninitialized(): T = null as T
+
+    @get:Rule
+    val expectedException: ExpectedException = ExpectedException.none()
 
     @get:Rule
     val userPhotoListActivityRule = ActivityTestRule(
-        UserPhotoListActivity::class.java,
-        true, false
+        UserPhotoListActivity::class.java, true, false
     )
 
     @get:Rule
     val photoDetailsActivityRule = ActivityTestRule(
-        PhotoDetailsActivity::class.java,
-        true, false
+        PhotoDetailsActivity::class.java, true, false
     )
 
     @Before
-    fun createDb() {
+    fun setupDatabase() {
         val context = ApplicationProvider.getApplicationContext<Context>()
         photoDatabase = Room.inMemoryDatabaseBuilder(context, PhotoDatabase::class.java).build()
-        query = photoDatabase.query()
+        databaseQuery = photoDatabase.query()
+    }
+
+    @Before
+    fun setupDagger() {
+        val context = ApplicationProvider.getApplicationContext<Context>()
+        DaggerTestAppComponent.builder()
+            .context(context)
+            .webService(Mockito.mock(WebService::class.java))
+            .build().inject(this)
     }
 
     @After
     fun closeDb() {
         photoDatabase.close()
+    }
+
+    @Test
+    fun testIncorrectJSON() {
+        val response = "incorect json"
+        Mockito.`when`(webService.request(any())).thenReturn(Single.just(response))
+
+        expectedException.expect(JsonSyntaxException::class.java)
+        remoteRepository.getPhotoList().map { remoteRepository.mapUserPhotoList(it) }.blockingGet()
     }
 
     @Test
@@ -75,9 +115,9 @@ class ApplicationTests {
                 0, 0
             )
         )
-        query.insertPhotoList(photoList)
+        databaseQuery.insertPhotoList(photoList)
 
-        val list = query.getPhotoList().blockingFirst()
+        val list = databaseQuery.getPhotoList().blockingFirst()
         assertThat(list[0].id, equalTo(photoList[0].id))
     }
 
@@ -146,7 +186,7 @@ class ApplicationTests {
         photoDetailsActivityRule.launchActivity(intent)
         Thread.sleep(1000)
 
-        Espresso.onView(ViewMatchers.withText(R.string.unable_to_display_photo_details))
+        onView(ViewMatchers.withText(R.string.unable_to_display_photo_details))
             .inRoot(RootMatchers.isDialog())
             .check(ViewAssertions.matches(ViewMatchers.isDisplayed()))
     }
