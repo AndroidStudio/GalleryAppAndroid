@@ -229,5 +229,3 @@ class ApplicationTests {
             .check(ViewAssertions.matches(ViewMatchers.isDisplayed()))
     }
 }
-
-fun AssetManager.readAssetsFile(fileName: String): String = open(fileName).bufferedReader().use { it.readText() }
