@@ -70,7 +70,7 @@ open class PhotoRepository @Inject constructor(
         return appDatabase.photoQuery().getPhotoList()
     }
 
-    fun mapPhotoListItem(list: List<PhotoEntity>): List<PhotoListItemModel> {
+    private fun mapPhotoListItem(list: List<PhotoEntity>): List<PhotoListItemModel> {
         return list.map { photoEntity -> PhotoListItemModel(photoEntity) }
     }
 
