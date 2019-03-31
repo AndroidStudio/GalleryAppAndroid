@@ -2,9 +2,9 @@ package fdt.galleryapp.repository.photo
 
 import com.google.gson.Gson
 import fdt.galleryapp.entities.PhotoEntity
-import fdt.galleryapp.models.PhotoDetailsModel
-import fdt.galleryapp.models.PhotoListItemModel
 import fdt.galleryapp.models.PhotoModel
+import fdt.galleryapp.models.decorators.PhotoDetailsModel
+import fdt.galleryapp.models.decorators.PhotoListItemModel
 import fdt.galleryapp.modules.DatabaseModule
 import fdt.galleryapp.webservice.WebService
 import io.reactivex.BackpressureStrategy
@@ -52,9 +52,6 @@ open class PhotoRepository @Inject constructor(
         }
     }
 
-    /**
-     * Get photo list from server
-     * */
     private fun getPhotoListRemote(): Single<List<PhotoEntity>> {
         return webService.request(api.getPhotoList(30, "popular"))
             .map { Gson().fromJson(it, Array<PhotoModel>::class.java).toList() }
@@ -64,9 +61,6 @@ open class PhotoRepository @Inject constructor(
         //TODO simplify to many mapping...
     }
 
-    /**
-     * Get photo list from database
-     */
     private fun getPhotoListFromDatabase(): Single<List<PhotoEntity>> {
         return appDatabase.photoQuery().getPhotoList()
     }
@@ -75,9 +69,6 @@ open class PhotoRepository @Inject constructor(
         return list.map { photoEntity -> PhotoListItemModel(photoEntity) }
     }
 
-    /**
-     * Get photo details from server
-     * */
     fun getPhotoDetailsRemote(photoId: String): Single<PhotoDetailsModel> {
         return webService.request(api.getPhotoDetails(photoId))
             .map { Gson().fromJson(it, PhotoModel::class.java) }

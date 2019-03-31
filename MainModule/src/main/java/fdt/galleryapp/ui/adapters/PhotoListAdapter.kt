@@ -6,7 +6,7 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.RecyclerView
 import fdt.galleryapp.R
-import fdt.galleryapp.models.PhotoListItemModel
+import fdt.galleryapp.models.decorators.PhotoListItemModel
 import fdt.galleryapp.ui.holders.PhotoViewHolder
 import fdt.galleryapp.utils.PhotoDiffUtil
 

@@ -6,7 +6,7 @@ import androidx.appcompat.app.AppCompatActivity
 class Device {
 
     companion object {
-        fun getScreenWidth(context :AppCompatActivity) : Int{
+        fun getScreenWidth(context: AppCompatActivity): Int {
             val point = Point()
             context.windowManager.defaultDisplay.getSize(point)
             return point.x

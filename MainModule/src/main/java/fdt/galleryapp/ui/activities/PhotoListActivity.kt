@@ -6,7 +6,7 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import dagger.android.AndroidInjection
 import fdt.galleryapp.R
-import fdt.galleryapp.models.PhotoListItemModel
+import fdt.galleryapp.models.decorators.PhotoListItemModel
 import fdt.galleryapp.ui.adapters.PhotoListAdapter
 import fdt.galleryapp.viewmodel.PhotoListViewModel
 import kotlinx.android.synthetic.main.photo_list_activity.*

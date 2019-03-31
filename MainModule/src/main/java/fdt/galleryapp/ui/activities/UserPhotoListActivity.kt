@@ -10,7 +10,7 @@ import fdt.galleryapp.constants.USER_FIRST_NAME
 import fdt.galleryapp.constants.USER_LAST_NAME
 import fdt.galleryapp.constants.USER_NAME
 import fdt.galleryapp.models.PhotoModel
-import fdt.galleryapp.models.UserPhotoListItemModel
+import fdt.galleryapp.models.decorators.UserPhotoListItemModel
 import fdt.galleryapp.ui.adapters.UserPhotoListAdapter
 import fdt.galleryapp.utils.getExtra
 import fdt.galleryapp.viewmodel.UserPhotoListViewModel
@@ -36,7 +36,10 @@ class UserPhotoListActivity : BaseActivity() {
     private fun getUserPhotoList() {
         val userName = getExtra<String>(USER_NAME)
         if (!userName.isNullOrEmpty()) {
-            userPhotoListViewModel.getUserPhotoListFromServer(userName, ::onPublishUserPhotoList, ::onErrorLoadingUserPhotoList)
+            userPhotoListViewModel.getUserPhotoListFromServer(
+                userName, ::onPublishUserPhotoList,
+                ::onErrorLoadingUserPhotoList
+            )
         } else {
             showErrorMessage(getString(R.string.incorrectUserName))
         }

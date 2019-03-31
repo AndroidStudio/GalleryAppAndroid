@@ -4,7 +4,7 @@ import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.RecyclerView
-import fdt.galleryapp.models.UserPhotoListItemModel
+import fdt.galleryapp.models.decorators.UserPhotoListItemModel
 import fdt.galleryapp.ui.holders.UserPhotoViewHolder
 
 class UserPhotoListAdapter(private var context: AppCompatActivity) : RecyclerView.Adapter<UserPhotoViewHolder>() {

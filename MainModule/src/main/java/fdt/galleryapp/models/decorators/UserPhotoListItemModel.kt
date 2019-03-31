@@ -1,4 +1,6 @@
-package fdt.galleryapp.models
+package fdt.galleryapp.models.decorators
+
+import fdt.galleryapp.models.PhotoModel
 
 //UserPhotoListItemModel as decorator
 class UserPhotoListItemModel(photoModel: PhotoModel) {

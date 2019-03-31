@@ -11,10 +11,7 @@ class UserPhotoRepository @Inject constructor(private var webService: WebService
 
     private val api = retrofit.create(UserPhotoApi::class.java)
 
-    /**
-     * Get user photo list from server
-     * */
-    fun getUserPhotoList(username: String): Single<List<PhotoModel>> {
+    fun getUserPhotoListRemote(username: String): Single<List<PhotoModel>> {
         return webService.request(api.getUserPhoto(username, 30, "popular"))
             .map { Gson().fromJson(it, Array<PhotoModel>::class.java).toList() }
     }

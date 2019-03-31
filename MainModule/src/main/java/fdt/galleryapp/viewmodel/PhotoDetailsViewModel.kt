@@ -1,7 +1,7 @@
 package fdt.galleryapp.viewmodel
 
 import android.app.Application
-import fdt.galleryapp.models.PhotoDetailsModel
+import fdt.galleryapp.models.decorators.PhotoDetailsModel
 import fdt.galleryapp.repository.photo.PhotoRepository
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.schedulers.Schedulers

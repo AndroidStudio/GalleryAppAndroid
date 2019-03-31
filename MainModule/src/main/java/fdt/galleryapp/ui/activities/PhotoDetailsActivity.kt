@@ -7,7 +7,7 @@ import com.bumptech.glide.Glide
 import dagger.android.AndroidInjection
 import fdt.galleryapp.R
 import fdt.galleryapp.constants.PHOTO_DETAILS_PARAMETERS
-import fdt.galleryapp.models.PhotoDetailsModel
+import fdt.galleryapp.models.decorators.PhotoDetailsModel
 import fdt.galleryapp.parametres.PhotoDetailsParameters
 import fdt.galleryapp.utils.Navigation
 import fdt.galleryapp.utils.device.Device

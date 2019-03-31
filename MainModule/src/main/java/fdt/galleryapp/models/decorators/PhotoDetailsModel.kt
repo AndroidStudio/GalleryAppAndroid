@@ -1,7 +1,8 @@
-package fdt.galleryapp.models
+package fdt.galleryapp.models.decorators
 
 import android.content.Context
 import fdt.galleryapp.R
+import fdt.galleryapp.models.PhotoModel
 
 //PhotoDetailsModel as decorator
 class PhotoDetailsModel(private val photoModel: PhotoModel) {

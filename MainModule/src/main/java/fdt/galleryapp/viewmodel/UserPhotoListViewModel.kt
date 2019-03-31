@@ -8,7 +8,7 @@ import io.reactivex.schedulers.Schedulers
 import javax.inject.Inject
 
 class UserPhotoListViewModel @Inject constructor(
-    private var userPhotoRepository: UserPhotoRepository,
+    private val userPhotoRepository: UserPhotoRepository,
     application: Application
 ) : BaseViewModel(application) {
 
@@ -18,7 +18,7 @@ class UserPhotoListViewModel @Inject constructor(
         onErrorLoadingUserPhotoList: (Throwable) -> Unit
     ) {
         addDisposable(
-            userPhotoRepository.getUserPhotoList(userName)
+            userPhotoRepository.getUserPhotoListRemote(userName)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(onPublishUserPhotoList, onErrorLoadingUserPhotoList)

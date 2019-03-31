@@ -6,7 +6,7 @@ import dagger.Component
 import dagger.android.AndroidInjectionModule
 import fdt.galleryapp.component.AppComponent
 import fdt.galleryapp.modules.ActivitiesModule
-import fdt.galleryapp.modules.ContextModude
+import fdt.galleryapp.modules.ContextModule
 import fdt.galleryapp.modules.DatabaseModule
 import fdt.galleryapp.modules.NetworkModule
 import fdt.galleryapp.webservice.WebService
@@ -14,7 +14,7 @@ import javax.inject.Singleton
 
 @Singleton
 @Component(
-    modules = [DatabaseModule::class, NetworkModule::class, ContextModude::class, AndroidInjectionModule::class,
+    modules = [DatabaseModule::class, NetworkModule::class, ContextModule::class, AndroidInjectionModule::class,
         ActivitiesModule::class]
 )
 interface TestAppComponent : AppComponent {

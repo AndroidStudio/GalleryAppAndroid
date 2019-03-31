@@ -6,13 +6,16 @@ import androidx.core.view.marginLeft
 import com.bumptech.glide.Glide
 import com.bumptech.glide.load.resource.drawable.DrawableTransitionOptions
 import com.bumptech.glide.request.RequestOptions
-import fdt.galleryapp.models.PhotoListItemModel
+import fdt.galleryapp.models.decorators.PhotoListItemModel
 import fdt.galleryapp.parametres.PhotoDetailsParameters
 import fdt.galleryapp.utils.Navigation
 import fdt.galleryapp.utils.device.Device
 import kotlinx.android.synthetic.main.photo_list_item.view.*
 
-class PhotoViewHolder(itemView: View, private val context: AppCompatActivity) :
+class PhotoViewHolder(
+    itemView: View,
+    private val context: AppCompatActivity
+) :
     BaseHolder<PhotoListItemModel>(itemView) {
     private var width = Device.getScreenWidth(context) - itemView.cardView.marginLeft * 2
 

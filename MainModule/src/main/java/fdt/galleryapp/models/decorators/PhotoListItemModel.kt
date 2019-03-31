@@ -1,4 +1,4 @@
-package fdt.galleryapp.models
+package fdt.galleryapp.models.decorators
 
 import android.content.Context
 import fdt.galleryapp.R

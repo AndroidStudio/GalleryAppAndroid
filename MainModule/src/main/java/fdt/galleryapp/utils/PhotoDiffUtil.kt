@@ -1,7 +1,7 @@
 package fdt.galleryapp.utils
 
 import androidx.recyclerview.widget.DiffUtil
-import fdt.galleryapp.models.PhotoListItemModel
+import fdt.galleryapp.models.decorators.PhotoListItemModel
 
 class PhotoDiffUtil(
     private val oldList: List<PhotoListItemModel>,
