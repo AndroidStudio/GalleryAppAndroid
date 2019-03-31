@@ -6,6 +6,8 @@ import fdt.galleryapp.models.PhotoListItemModel
 import fdt.galleryapp.models.PhotoModel
 import fdt.galleryapp.modules.DatabaseModule
 import fdt.galleryapp.webservice.WebService
+import io.reactivex.BackpressureStrategy
+import io.reactivex.Flowable
 import io.reactivex.FlowableOnSubscribe
 import io.reactivex.Single
 import retrofit2.Retrofit
@@ -19,8 +21,8 @@ open class PhotoRepository @Inject constructor(
 
     private val api = retrofit.create(PhotoApi::class.java)
 
-    fun getPhotoList(): FlowableOnSubscribe<List<PhotoEntity>> {
-        return FlowableOnSubscribe { emitter ->
+    fun getPhotoList(): Flowable<List<PhotoListItemModel>> {
+        return Flowable.create(FlowableOnSubscribe<List<PhotoEntity>> { emitter ->
             //Get photo list from database
             var photoList: List<PhotoEntity>? = null
             emitter.setDisposable(
@@ -41,7 +43,7 @@ open class PhotoRepository @Inject constructor(
                     }
                 }
             )
-        }
+        }, BackpressureStrategy.BUFFER).map(::mapPhotoListItem)
     }
 
     /**
@@ -57,14 +59,6 @@ open class PhotoRepository @Inject constructor(
     }
 
     /**
-     * Get photo details from server
-     * */
-    fun getPhotoDetailsRemote(photoId: String): Single<PhotoModel> {
-        return webService.request(api.getPhotoDetails(photoId))
-            .map { Gson().fromJson(it, PhotoModel::class.java) }
-    }
-
-    /**
      * Get photo list from database
      */
     private fun getPhotoListFromDatabase(): Single<List<PhotoEntity>> {
@@ -73,5 +67,13 @@ open class PhotoRepository @Inject constructor(
 
     fun mapPhotoListItem(list: List<PhotoEntity>): List<PhotoListItemModel> {
         return list.map { photoEntity -> PhotoListItemModel(photoEntity) }
+    }
+
+    /**
+     * Get photo details from server
+     * */
+    fun getPhotoDetailsRemote(photoId: String): Single<PhotoModel> {
+        return webService.request(api.getPhotoDetails(photoId))
+            .map { Gson().fromJson(it, PhotoModel::class.java) }
     }
 }
