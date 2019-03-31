@@ -13,4 +13,10 @@
     <string name="from">FROM</string>
     <string name="noInternetConnection">No internet connection</string>
     <string name="connectionError">Connection error… code:</string>
+    <string name="description">Description</string>
+    <string name="make">Make</string>
+    <string name="model">Model</string>
+    <string name="exposure">Exposure time</string>
+    <string name="aperture">Aperture</string>
+    <string name="focel_length">Focal length</string>
 </resources>

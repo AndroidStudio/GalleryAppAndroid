@@ -2,50 +2,49 @@ package fdt.galleryapp.ui.activities
 
 import android.os.Bundle
 import android.view.View
-import androidx.lifecycle.ViewModelProviders
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import dagger.android.AndroidInjection
 import fdt.galleryapp.R
+import fdt.galleryapp.models.PhotoListItemModel
 import fdt.galleryapp.ui.adapters.PhotoListAdapter
 import fdt.galleryapp.viewmodel.PhotoListViewModel
 import kotlinx.android.synthetic.main.photo_list_activity.*
-
+import javax.inject.Inject
 
 class PhotoListActivity : BaseActivity() {
 
-    private val photoListViewModel by lazy {
-        ViewModelProviders.of(this).get(PhotoListViewModel::class.java)
-    }
-
     private val photoListAdapter by lazy { PhotoListAdapter(this) }
 
+    @Inject
+    lateinit var photoListViewModel: PhotoListViewModel
+
     override fun onCreate(savedInstanceState: Bundle?) {
+        AndroidInjection.inject(this)
         super.onCreate(savedInstanceState)
+
         setContentView(R.layout.photo_list_activity)
         recyclerView.layoutManager = LinearLayoutManager(
             this,
             RecyclerView.VERTICAL, false
         )
         recyclerView.adapter = photoListAdapter
-        loadPhotosLocal()
-        loadPhotosRemote()
+        loadPhotosList()
     }
 
-    private fun loadPhotosLocal() {
-        photoListViewModel.getPhotoListLocal {
-            if (it.isNotEmpty()) {
-                progressBar.visibility = View.GONE
-                photoListAdapter.photoList = it
-            }
-        }
+    private fun loadPhotosList() {
+        photoListViewModel.getPhotoList(::onPublishPhotoLost, ::onErrorLoadingPhotoList)
     }
 
-    private fun loadPhotosRemote() {
-        photoListViewModel.getPhotoListRemote {
-            progressBar.visibility = View.GONE
-            showErrorMessage(it.message)
-            it.printStackTrace()
-        }
+    private fun onPublishPhotoLost(list: List<PhotoListItemModel>) {
+        progressBar.visibility = View.GONE
+        photoListAdapter.photoList = list
+    }
+
+    private fun onErrorLoadingPhotoList(throwable: Throwable) {
+        progressBar.visibility = View.GONE
+        showErrorMessage(throwable.message)
+        throwable.printStackTrace()
     }
 
     override fun getToolbarTitle(): String {

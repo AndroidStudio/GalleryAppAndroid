@@ -3,50 +3,54 @@ package fdt.galleryapp.ui.activities
 import android.os.Bundle
 import android.view.View
 import android.widget.LinearLayout
-import androidx.lifecycle.ViewModelProviders
 import com.bumptech.glide.Glide
+import dagger.android.AndroidInjection
 import fdt.galleryapp.R
-import fdt.galleryapp.constants.*
+import fdt.galleryapp.constants.PHOTO_DETAILS_PARAMETERS
 import fdt.galleryapp.models.PhotoModel
+import fdt.galleryapp.parametres.PhotoDetailsParameters
 import fdt.galleryapp.utils.Navigation
 import fdt.galleryapp.utils.device.Device
 import fdt.galleryapp.utils.getExtra
 import fdt.galleryapp.viewmodel.PhotoDetailsViewModel
 import kotlinx.android.synthetic.main.photo_details_activity.*
+import javax.inject.Inject
 
 class PhotoDetailsActivity : BaseActivity() {
 
-    private val photoDetailsViewModel by lazy {
-        ViewModelProviders.of(this).get(PhotoDetailsViewModel::class.java)
-    }
+    @Inject
+    lateinit var photoDetailsViewModel: PhotoDetailsViewModel
 
     override fun onCreate(savedInstanceState: Bundle?) {
+        AndroidInjection.inject(this)
         super.onCreate(savedInstanceState)
+
         setContentView(R.layout.photo_details_activity)
         setToolbarColor(R.color.toolbarColor)
         getPhotoDetails()
     }
 
     private fun getPhotoDetails() {
-        val photoId = getExtra<String>(PHOTO_ID)
-        val photoUrlFull = getExtra<String>(PHOTO_URL_FULL)
-        val photoUrl = getExtra<String>(PHOTO_URL)
-        val photoWidth = getExtra<Int>(PHOTO_WIDTH)
-        val photoHeight = getExtra<Int>(PHOTO_HEIGHT)
+        val photoDetailsParameters =
+            getExtra<PhotoDetailsParameters>(PHOTO_DETAILS_PARAMETERS)
+
+        val photoId = photoDetailsParameters?.photoId()
+        val photoUrlFull = photoDetailsParameters?.photoUrlFull()
+        val photoUrl = photoDetailsParameters?.photoUrl()
+        val photoHeight = photoDetailsParameters?.photoHeight() ?: 0
+        val photoWidth = photoDetailsParameters?.photoWidth() ?: 0
 
         if (photoId == null
-            || photoUrlFull == null
             || photoUrl == null
-            || photoHeight == null
-            || photoWidth == null
+            || photoUrlFull == null
+            || photoHeight == 0
             || photoWidth == 0
-            ) {
+        ) {
             showErrorMessage(getString(R.string.unableToDisplayPhotoDetails))
             return
         }
 
         val destHeight = Device.getScreenWidth(this) * photoHeight / photoWidth
-
         photoImageView.layoutParams = LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, destHeight)
         Glide.with(this).load(photoUrl).into(photoImageView)
 
@@ -57,28 +61,31 @@ class PhotoDetailsActivity : BaseActivity() {
     }
 
     private fun getPhotoDetailsRemote(photoId: String) {
-        photoDetailsViewModel.getPhotoDetails(photoId, ::updatePhotoDetails, ::onError)
+        photoDetailsViewModel.getPhotoDetails(photoId, ::onPublishPhotoDetails, ::onErrorLoadingPhotoDetails)
     }
 
-    private fun updatePhotoDetails(photoModel: PhotoModel) {
-        descriptionTextView.text = String.format("Description: %s", photoModel.description ?: "")
-        nameTextView.text = String.format("From: %s", photoModel.userModel.name ?: "")
+    private fun onPublishPhotoDetails(photoModel: PhotoModel) {
+        progressBar.visibility = View.GONE
+        descriptionTextView.text =
+            String.format("%s: %s", getString(R.string.description), photoModel.description ?: "")
+        nameTextView.text = String.format("%s: %s", getString(R.string.from), photoModel.userModel.name ?: "")
         photoDetailsTextView.text = String.format(
-            "Make: %s\nModel: %s\nExposure time: %s\nAperture: %s\nFocal length: %s\nISO: %s",
+            "%s: %s\n%s: %s\n%s: %s\n%s: %s\n%s: %s\nISO: %s",
+            getString(R.string.make),
             photoModel.exifModel.make ?: "",
+            getString(R.string.model),
             photoModel.exifModel.model ?: "",
+            getString(R.string.exposure),
             photoModel.exifModel.exposure_time ?: "",
+            getString(R.string.aperture),
             photoModel.exifModel.aperture,
+            getString(R.string.focel_length),
             photoModel.exifModel.focal_length,
             photoModel.exifModel.iso
         )
-        progressBar.visibility = View.GONE
     }
 
-    /**
-     * Error loading photo details
-     * */
-    private fun onError(throwable: Throwable) {
+    private fun onErrorLoadingPhotoDetails(throwable: Throwable) {
         progressBar.visibility = View.GONE
         showErrorMessage(throwable.message)
         throwable.printStackTrace()

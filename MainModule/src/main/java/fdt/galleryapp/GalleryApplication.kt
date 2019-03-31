@@ -1,29 +1,35 @@
 package fdt.galleryapp
 
+import android.app.Activity
 import android.app.Application
 import androidx.appcompat.app.AppCompatDelegate
 import com.facebook.stetho.Stetho
-import fdt.galleryapp.component.AppComponent
+import dagger.android.DispatchingAndroidInjector
+import dagger.android.HasActivityInjector
 import fdt.galleryapp.component.DaggerAppComponent
 import timber.log.Timber
+import javax.inject.Inject
 
-class FDTApplication : Application() {
+class GalleryApplication : Application(), HasActivityInjector {
 
-    companion object {
-        lateinit var appComponent: AppComponent
-    }
+    @Inject
+    lateinit var dispatchingAndroidInjector: DispatchingAndroidInjector<Activity>
 
     override fun onCreate() {
         super.onCreate()
         AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_AUTO)
 
-        appComponent = DaggerAppComponent.builder()
-            .context(this)
+        DaggerAppComponent.builder()
+            .setApplication(this)
             .build()
+            .inject(this)
 
         if (BuildConfig.DEBUG) {
             Stetho.initializeWithDefaults(this)
             Timber.plant(Timber.DebugTree())
         }
     }
+
+    override fun activityInjector() = dispatchingAndroidInjector
+
 }

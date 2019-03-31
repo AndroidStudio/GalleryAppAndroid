@@ -1,32 +1,27 @@
 package fdt.galleryapp.viewmodel
 
 import android.app.Application
-import fdt.galleryapp.FDTApplication
 import fdt.galleryapp.models.PhotoModel
-import fdt.galleryapp.repository.remote.RemoteRepository
+import fdt.galleryapp.repository.photo.PhotoRepository
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.schedulers.Schedulers
 import javax.inject.Inject
 
-class PhotoDetailsViewModel(application: Application) : BaseViewModel(application) {
-
-    @Inject
-    lateinit var remoteRepository: RemoteRepository
-
-    init {
-        FDTApplication.appComponent.inject(this)
-    }
+class PhotoDetailsViewModel @Inject constructor(
+    private val photoRepository: PhotoRepository,
+    application: Application
+) : BaseViewModel(application) {
 
     fun getPhotoDetails(
         photoId: String,
-        photoDetails: (PhotoModel) -> Unit,
-        error: (Throwable) -> Unit
+        onPublishPhotoDetails: (PhotoModel) -> Unit,
+        onErrorLoadingPhotoDetails: (Throwable) -> Unit
     ) {
         addDisposable(
-            remoteRepository.getPhotoDetails(photoId).subscribeOn(Schedulers.io())
-                .map { remoteRepository.mapPhotoDetails(it) }
+            photoRepository.getPhotoDetailsRemote(photoId)
+                .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(photoDetails, error)
+                .subscribe(onPublishPhotoDetails, onErrorLoadingPhotoDetails)
         )
     }
 }

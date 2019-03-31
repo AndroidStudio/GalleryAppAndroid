@@ -1,70 +1,53 @@
 package fdt.galleryapp.viewmodel
 
 import android.app.Application
-import fdt.galleryapp.FDTApplication
-import fdt.galleryapp.entities.PhotoEntity
-import fdt.galleryapp.models.PhotoModel
-import fdt.galleryapp.repository.local.PhotoDatabase
-import fdt.galleryapp.repository.remote.RemoteRepository
+import fdt.galleryapp.models.PhotoListItemModel
+import fdt.galleryapp.repository.photo.PhotoRepository
+import io.reactivex.BackpressureStrategy
+import io.reactivex.Flowable
+import io.reactivex.FlowableOnSubscribe
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.schedulers.Schedulers
 import javax.inject.Inject
 
-class PhotoListViewModel(application: Application) : BaseViewModel(application) {
+class PhotoListViewModel @Inject constructor(
+    private val photoRepository: PhotoRepository,
+    application: Application
+) : BaseViewModel(application) {
 
-    @Inject
-    lateinit var remoteRepository: RemoteRepository
-
-    @Inject
-    lateinit var photoDatabase: PhotoDatabase
-
-    init {
-        FDTApplication.appComponent.inject(this)
-    }
-
-    /**
-     * Load photos from database
-     * */
-    fun getPhotoListLocal(onSuccess: (List<PhotoEntity>) -> Unit) {
+    fun getPhotoList(
+        onPublishPhotoList: (List<PhotoListItemModel>) -> Unit,
+        onErrorLoadingPhotoList: (Throwable) -> Unit
+    ) {
         addDisposable(
-            photoDatabase.query().getPhotoList()
-                .observeOn(AndroidSchedulers.mainThread()).subscribe(onSuccess)
+            Flowable.create(
+                FlowableOnSubscribe<List<PhotoListItemModel>>
+                { emitter ->
+                    //Get photo list from database
+                    var photoList: List<PhotoListItemModel>? = null
+                    emitter.setDisposable(
+                        photoRepository.getPhotoListFromDatabase()
+                            .subscribe({
+                                if (!it.isNullOrEmpty()) {
+                                    emitter.onNext(it)
+                                    photoList = it
+                                }
+                            }, emitter::onError)
+                    )
+
+                    //Get photo list from server
+                    emitter.setDisposable(photoRepository.getPhotoListRemote()
+                        .subscribe(emitter::onNext) {
+                            //If error occurred and photo list in database is empty throw exception
+                            if (photoList.isNullOrEmpty()) {
+                                emitter.onError(it)
+                            }
+                        }
+                    )
+                }, BackpressureStrategy.BUFFER
+            ).subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(onPublishPhotoList, onErrorLoadingPhotoList)
         )
-    }
-
-    /**
-     * Download photo list from server
-     * */
-    fun getPhotoListRemote(onError: (Throwable) -> Unit) {
-        addDisposable(remoteRepository.getPhotoList()
-            .map { remoteRepository.mapPhotoList(it) }
-            .subscribeOn(Schedulers.io())
-            .observeOn(AndroidSchedulers.mainThread())
-            .subscribe(this::savePhotosToDatabase, onError))
-    }
-
-    private fun savePhotosToDatabase(photoList: MutableList<PhotoModel>) {
-        val list: MutableList<PhotoEntity> = arrayListOf()
-        photoList.forEach {
-            list.add(
-                PhotoEntity(
-                    it.id,
-                    it.userModel.username,
-                    it.userModel.first_name,
-                    it.userModel.last_name,
-                    it.description,
-                    it.userModel.location,
-                    it.userModel.profile_image.large,
-                    it.urlsModel.regular,//small
-                    it.urlsModel.thumb,
-                    it.urlsModel.raw,
-                    it.urlsModel.regular,
-                    it.width,
-                    it.height
-                )
-            )
-        }
-
-        photoDatabase.query().insertPhotoList(list)
     }
 }
