@@ -8,7 +8,6 @@ import fdt.galleryapp.modules.DatabaseModule
 import fdt.galleryapp.webservice.WebService
 import io.reactivex.Single
 import retrofit2.Retrofit
-import java.lang.Exception
 import javax.inject.Inject
 
 open class PhotoRepository @Inject constructor(

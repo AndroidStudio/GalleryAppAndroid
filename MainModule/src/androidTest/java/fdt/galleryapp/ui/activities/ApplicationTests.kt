@@ -3,7 +3,6 @@ package fdt.galleryapp.ui.activities
 import android.app.Application
 import android.content.Context
 import android.content.Intent
-import android.content.res.AssetManager
 import androidx.appcompat.widget.Toolbar
 import androidx.room.Room
 import androidx.test.core.app.ApplicationProvider
