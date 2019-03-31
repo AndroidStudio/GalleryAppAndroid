@@ -7,8 +7,7 @@ import dagger.Provides
 import fdt.galleryapp.BuildConfig
 import fdt.galleryapp.constants.API_KEY
 import fdt.galleryapp.constants.BASE_URL
-import fdt.galleryapp.repository.remote.RemoteRepository
-import fdt.galleryapp.webservice.OkHttpClientBuilder
+import fdt.galleryapp.webservice.HttpClientBuilder
 import okhttp3.Interceptor
 import okhttp3.OkHttpClient
 import okhttp3.internal.platform.Platform
@@ -20,16 +19,16 @@ import java.util.concurrent.TimeUnit
 class NetworkModule {
 
     @Provides
-    fun provideRetrofit(): RemoteRepository.API {
+    fun provideRetrofit(): Retrofit {
         return Retrofit.Builder().baseUrl(BASE_URL)
             .client(createOkHttpClient())
             .addCallAdapterFactory(RxJava2CallAdapterFactory.create())
-            .build().create(RemoteRepository.API::class.java)
+            .build()
     }
 
     private fun createOkHttpClient(): OkHttpClient {
         try {
-            val builder = OkHttpClientBuilder.getOkHttpClientBuilder()
+            val builder = HttpClientBuilder.getOkHttpClientBuilder()
             builder.connectTimeout(60, TimeUnit.SECONDS)
             builder.readTimeout(60, TimeUnit.SECONDS)
             builder.addInterceptor(createHeaders())
@@ -62,5 +61,4 @@ class NetworkModule {
             .response("RESPONSE")
             .build()
     }
-
 }

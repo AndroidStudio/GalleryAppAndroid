@@ -1,28 +1,20 @@
 package fdt.galleryapp.ui.adapters
 
 import android.view.LayoutInflater
-import android.view.View
 import android.view.ViewGroup
 import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.RecyclerView
-import com.bumptech.glide.Glide
-import com.bumptech.glide.load.resource.drawable.DrawableTransitionOptions
-import com.bumptech.glide.request.RequestOptions
 import fdt.galleryapp.R
-import fdt.galleryapp.entities.PhotoEntity
-import fdt.galleryapp.utils.BaseHolder
-import fdt.galleryapp.utils.Navigation
+import fdt.galleryapp.models.PhotoListItemModel
+import fdt.galleryapp.ui.holders.PhotoViewHolder
 import fdt.galleryapp.utils.PhotoDiffUtil
-import kotlinx.android.synthetic.main.photo_list_item.view.*
 
-class PhotoListAdapter(private val context: AppCompatActivity) :
-    RecyclerView.Adapter<PhotoListAdapter.PhotoViewHolder>() {
+class PhotoListAdapter(private val context: AppCompatActivity) : RecyclerView.Adapter<PhotoViewHolder>() {
 
-    private val layoutInflater: LayoutInflater = LayoutInflater
-        .from(context)
+    private val layoutInflater: LayoutInflater = LayoutInflater.from(context)
 
-    var photoList: List<PhotoEntity> = arrayListOf()
+    var photoList: List<PhotoListItemModel> = arrayListOf()
         set(value) {
             val diff = DiffUtil.calculateDiff(PhotoDiffUtil(field, value))
             field = value
@@ -44,50 +36,5 @@ class PhotoListAdapter(private val context: AppCompatActivity) :
 
     override fun onBindViewHolder(holder: PhotoViewHolder, position: Int) {
         holder.onBind(photoList[position])
-    }
-
-    class PhotoViewHolder(itemView: View, private val context: AppCompatActivity) : BaseHolder<PhotoEntity>(itemView) {
-
-        override fun onBind(model: PhotoEntity) {
-            itemView.titleTextView.text = String.format("%s %s", model.first_name ?: "", model.last_name ?: "")
-            itemView.fromButton.text = String.format("%s %s", context.getString(R.string.from), model.last_name ?: "")
-            itemView.descriptionTextView.text = model.description
-            itemView.locationTextView.text = model.location
-
-            Glide.with(context)
-                .load(model.avatar)
-                .apply(RequestOptions().circleCrop())
-                .into(itemView.avatarImageView)
-
-            Glide.with(context)
-                .load(model.photo_small)
-                .apply(RequestOptions().centerCrop())
-                .transition(DrawableTransitionOptions.withCrossFade())
-                .into(itemView.photoImageView)
-
-            itemView.detailsButton.setOnClickListener {
-                startPhotoDetailsActivity(model)
-            }
-
-            itemView.fromButton.setOnClickListener {
-                startUserPhotoListActivity(model)
-            }
-        }
-
-        private fun startUserPhotoListActivity(model: PhotoEntity) {
-            Navigation.startUserPhotoListActivity(context, model.user_name, model.last_name, model.first_name)
-        }
-
-        private fun startPhotoDetailsActivity(model: PhotoEntity) {
-            Navigation.startPhotoDetailsActivity(
-                itemView.photoImageView,
-                context,
-                model.id,
-                model.photo_full,
-                model.photo_small,
-                model.photo_width,
-                model.photo_height
-            )
-        }
     }
 }

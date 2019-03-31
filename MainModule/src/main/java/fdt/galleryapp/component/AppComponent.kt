@@ -1,17 +1,21 @@
 package fdt.galleryapp.component
 
-import android.content.Context
+import android.app.Application
 import dagger.BindsInstance
 import dagger.Component
+import dagger.android.AndroidInjectionModule
+import fdt.galleryapp.GalleryApplication
+import fdt.galleryapp.modules.ActivitiesModule
+import fdt.galleryapp.modules.ContextModude
 import fdt.galleryapp.modules.DatabaseModule
 import fdt.galleryapp.modules.NetworkModule
-import fdt.galleryapp.viewmodel.PhotoDetailsViewModel
-import fdt.galleryapp.viewmodel.PhotoListViewModel
-import fdt.galleryapp.viewmodel.UserPhotoListViewModel
 import javax.inject.Singleton
 
 @Singleton
-@Component(modules = [DatabaseModule::class, NetworkModule::class])
+@Component(
+    modules = [DatabaseModule::class, NetworkModule::class, ContextModude::class,
+        AndroidInjectionModule::class, ActivitiesModule::class]
+)
 interface AppComponent {
 
     @Component.Builder
@@ -20,15 +24,10 @@ interface AppComponent {
         fun build(): AppComponent
 
         @BindsInstance
-        fun context(context: Context): Builder
+        fun setApplication(application: Application): Builder
     }
 
-    fun inject(model: PhotoListViewModel)
+    fun inject(galleryApplication: GalleryApplication)
 
-    fun inject(model: PhotoDetailsViewModel)
-
-    fun inject(model: UserPhotoListViewModel)
-
-    fun getContext(): Context
 }
 

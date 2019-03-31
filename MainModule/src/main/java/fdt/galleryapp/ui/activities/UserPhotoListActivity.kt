@@ -2,24 +2,31 @@ package fdt.galleryapp.ui.activities
 
 import android.os.Bundle
 import android.view.View
-import androidx.lifecycle.ViewModelProviders
 import androidx.recyclerview.widget.RecyclerView
 import androidx.recyclerview.widget.StaggeredGridLayoutManager
+import dagger.android.AndroidInjection
 import fdt.galleryapp.R
 import fdt.galleryapp.constants.USER_FIRST_NAME
 import fdt.galleryapp.constants.USER_LAST_NAME
 import fdt.galleryapp.constants.USER_NAME
 import fdt.galleryapp.models.PhotoModel
+import fdt.galleryapp.models.UserPhotoListItemModel
 import fdt.galleryapp.ui.adapters.UserPhotoListAdapter
 import fdt.galleryapp.utils.getExtra
 import fdt.galleryapp.viewmodel.UserPhotoListViewModel
 import kotlinx.android.synthetic.main.user_photo_list_activity.*
+import javax.inject.Inject
 
 class UserPhotoListActivity : BaseActivity() {
     private val userPhotoListAdapter by lazy { UserPhotoListAdapter(this) }
 
+    @Inject
+    lateinit var userPhotoListViewModel: UserPhotoListViewModel
+
     override fun onCreate(savedInstanceState: Bundle?) {
+        AndroidInjection.inject(this)
         super.onCreate(savedInstanceState)
+
         setContentView(R.layout.user_photo_list_activity)
         recyclerView.layoutManager = StaggeredGridLayoutManager(2, RecyclerView.VERTICAL)
         recyclerView.adapter = userPhotoListAdapter
@@ -27,10 +34,9 @@ class UserPhotoListActivity : BaseActivity() {
     }
 
     private fun loadUserPhotoList() {
-        val model = ViewModelProviders.of(this).get(UserPhotoListViewModel::class.java)
         val userName = getExtra<String>(USER_NAME)
         if (!userName.isNullOrEmpty()) {
-            model.getUserPhotoList(userName, ::updateUserPhotoList, ::loadUserPhotoListError)
+            userPhotoListViewModel.getUserPhotoList(userName, ::updateUserPhotoList, ::loadUserPhotoListError)
         } else {
             showErrorMessage(getString(R.string.incorrectUserName))
         }
@@ -38,7 +44,7 @@ class UserPhotoListActivity : BaseActivity() {
 
     private fun updateUserPhotoList(mutableList: MutableList<PhotoModel>) {
         if (!mutableList.isNullOrEmpty()) {
-            userPhotoListAdapter.photoList = mutableList
+            userPhotoListAdapter.photoList = mutableList.map { UserPhotoListItemModel(it) }
         }
         progressBar.visibility = View.GONE
     }
@@ -53,6 +59,5 @@ class UserPhotoListActivity : BaseActivity() {
         val firstName = getExtra<String>(USER_FIRST_NAME) ?: ""
         val lastName = getExtra<String>(USER_LAST_NAME) ?: ""
         return getString(R.string.from) + " " + firstName.toUpperCase() + " " + lastName.toUpperCase()
-
     }
 }

@@ -1,14 +1,14 @@
 package fdt.galleryapp.utils
 
 import androidx.recyclerview.widget.DiffUtil
-import fdt.galleryapp.entities.PhotoEntity
+import fdt.galleryapp.models.PhotoListItemModel
 
 class PhotoDiffUtil(
-    private val oldList: List<PhotoEntity>,
-    private val newList: List<PhotoEntity>
+    private val oldList: List<PhotoListItemModel>,
+    private val newList: List<PhotoListItemModel>
 ) : DiffUtil.Callback() {
     override fun areItemsTheSame(oldItemPosition: Int, newItemPosition: Int): Boolean {
-        return oldList[oldItemPosition].id == newList[newItemPosition].id
+        return oldList[oldItemPosition] == newList[newItemPosition]
     }
 
     override fun getOldListSize(): Int {
@@ -20,14 +20,6 @@ class PhotoDiffUtil(
     }
 
     override fun areContentsTheSame(oldItemPosition: Int, newItemPosition: Int): Boolean {
-        val oldItem = oldList[oldItemPosition]
-        val newItem = newList[newItemPosition]
-
-        return oldItem.avatar == newItem.avatar &&
-                oldItem.description == newItem.description &&
-                oldItem.first_name == newItem.first_name &&
-                oldItem.last_name == newItem.last_name &&
-                oldItem.photo_raw == newItem.photo_raw &&
-                oldItem.location == newItem.location
+        return oldList[oldItemPosition] == newList[newItemPosition]
     }
 }

@@ -16,7 +16,7 @@ For support, please feel free to contact me at https://www.linkedin.com/in/syeda
 
 data class UserModel(
 
-    @SerializedName("id") val id: String,
+    @SerializedName("photoId") val id: String,
     @SerializedName("updated_at") val updated_at: String,
     @SerializedName("username") val username: String,
     @SerializedName("name") val name: String?,

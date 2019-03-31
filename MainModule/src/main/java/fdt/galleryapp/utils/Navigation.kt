@@ -4,6 +4,7 @@ import android.view.View
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.ActivityOptionsCompat
 import fdt.galleryapp.constants.*
+import fdt.galleryapp.parametres.PhotoDetailsParameters
 import fdt.galleryapp.ui.activities.FullPhotoActivity
 import fdt.galleryapp.ui.activities.PhotoDetailsActivity
 import fdt.galleryapp.ui.activities.PhotoListActivity
@@ -15,22 +16,10 @@ class Navigation {
     companion object {
         fun startPhotoDetailsActivity(
             view: View, context: AppCompatActivity,
-            photoId: String,
-            photoUrlFull: String?,
-            photoUrl: String?,
-            photoWidth: Int,
-            photoHeight: Int
+            photoDetailsParameters: PhotoDetailsParameters
         ) {
             context.launchActivity(
-                PhotoDetailsActivity::class.java,
-                {
-                    putExtra(PHOTO_ID, photoId)
-                    putExtra(PHOTO_URL_FULL, photoUrlFull)
-                    putExtra(PHOTO_URL, photoUrl)
-                    putExtra(PHOTO_WIDTH, photoWidth)
-                    putExtra(PHOTO_HEIGHT, photoHeight)
-                },
-
+                PhotoDetailsActivity::class.java, { putExtra(PHOTO_DETAILS_PARAMETERS, photoDetailsParameters) },
                 ActivityOptionsCompat.makeSceneTransitionAnimation(
                     context, view, "photo_image"
                 ).toBundle()
