@@ -6,6 +6,7 @@ import fdt.galleryapp.models.PhotoListItemModel
 import fdt.galleryapp.models.PhotoModel
 import fdt.galleryapp.modules.DatabaseModule
 import fdt.galleryapp.webservice.WebService
+import io.reactivex.FlowableOnSubscribe
 import io.reactivex.Single
 import retrofit2.Retrofit
 import javax.inject.Inject
@@ -18,23 +19,47 @@ open class PhotoRepository @Inject constructor(
 
     private val api = retrofit.create(PhotoApi::class.java)
 
+    fun getPhotoList(): FlowableOnSubscribe<List<PhotoEntity>> {
+        return FlowableOnSubscribe { emitter ->
+            //Get photo list from database
+            var photoList: List<PhotoEntity>? = null
+            emitter.setDisposable(
+                getPhotoListFromDatabase()
+                    .subscribe({
+                        if (!it.isNullOrEmpty()) {
+                            emitter.onNext(it)
+                            photoList = it
+                        }
+                    }, emitter::onError)
+            )
+            //Get photo list from server
+            emitter.setDisposable(getPhotoListRemote()
+                .subscribe(emitter::onNext) {
+                    //If error occurred and photo list in database is empty throw exception
+                    if (photoList.isNullOrEmpty()) {
+                        emitter.onError(it)
+                    }
+                }
+            )
+        }
+    }
+
     /**
      * Get photo list from server
      * */
-    open fun getPhotoListRemote(): Single<List<PhotoListItemModel>> {
+    private fun getPhotoListRemote(): Single<List<PhotoEntity>> {
         return webService.request(api.getPhotoList(30, "popular"))
             .map { Gson().fromJson(it, Array<PhotoModel>::class.java).toList() }
             .map { list ->
                 list.map { PhotoEntity(it) }.also { appDatabase.photoQuery().insertPhotoList(it) }
             }
-            .map(::mapPhotoListItem)
         //TODO simplify to many mapping...
     }
 
     /**
      * Get photo details from server
      * */
-    open fun getPhotoDetailsRemote(photoId: String): Single<PhotoModel> {
+    fun getPhotoDetailsRemote(photoId: String): Single<PhotoModel> {
         return webService.request(api.getPhotoDetails(photoId))
             .map { Gson().fromJson(it, PhotoModel::class.java) }
     }
@@ -42,12 +67,11 @@ open class PhotoRepository @Inject constructor(
     /**
      * Get photo list from database
      */
-    open fun getPhotoListFromDatabase(): Single<List<PhotoListItemModel>> {
+    private fun getPhotoListFromDatabase(): Single<List<PhotoEntity>> {
         return appDatabase.photoQuery().getPhotoList()
-            .map(::mapPhotoListItem)
     }
 
-    private fun mapPhotoListItem(list: List<PhotoEntity>): List<PhotoListItemModel> {
+    fun mapPhotoListItem(list: List<PhotoEntity>): List<PhotoListItemModel> {
         return list.map { photoEntity -> PhotoListItemModel(photoEntity) }
     }
 }
