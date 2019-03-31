@@ -2,6 +2,7 @@ package fdt.galleryapp.repository.photo
 
 import com.google.gson.Gson
 import fdt.galleryapp.entities.PhotoEntity
+import fdt.galleryapp.models.PhotoDetailsModel
 import fdt.galleryapp.models.PhotoListItemModel
 import fdt.galleryapp.models.PhotoModel
 import fdt.galleryapp.modules.DatabaseModule
@@ -77,8 +78,9 @@ open class PhotoRepository @Inject constructor(
     /**
      * Get photo details from server
      * */
-    fun getPhotoDetailsRemote(photoId: String): Single<PhotoModel> {
+    fun getPhotoDetailsRemote(photoId: String): Single<PhotoDetailsModel> {
         return webService.request(api.getPhotoDetails(photoId))
             .map { Gson().fromJson(it, PhotoModel::class.java) }
+            .map { PhotoDetailsModel(it) }
     }
 }

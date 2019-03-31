@@ -7,7 +7,7 @@ import com.bumptech.glide.Glide
 import dagger.android.AndroidInjection
 import fdt.galleryapp.R
 import fdt.galleryapp.constants.PHOTO_DETAILS_PARAMETERS
-import fdt.galleryapp.models.PhotoModel
+import fdt.galleryapp.models.PhotoDetailsModel
 import fdt.galleryapp.parametres.PhotoDetailsParameters
 import fdt.galleryapp.utils.Navigation
 import fdt.galleryapp.utils.device.Device
@@ -64,25 +64,11 @@ class PhotoDetailsActivity : BaseActivity() {
         photoDetailsViewModel.getPhotoDetails(photoId, ::onPublishPhotoDetails, ::onErrorLoadingPhotoDetails)
     }
 
-    private fun onPublishPhotoDetails(photoModel: PhotoModel) {
+    private fun onPublishPhotoDetails(photoDetailsModel: PhotoDetailsModel) {
         progressBar.visibility = View.GONE
-        descriptionTextView.text =
-            String.format("%s: %s", getString(R.string.description), photoModel.description ?: "")
-        nameTextView.text = String.format("%s: %s", getString(R.string.from), photoModel.userModel.name ?: "")
-        photoDetailsTextView.text = String.format(
-            "%s: %s\n%s: %s\n%s: %s\n%s: %s\n%s: %s\nISO: %s",
-            getString(R.string.make),
-            photoModel.exifModel.make ?: "",
-            getString(R.string.model),
-            photoModel.exifModel.model ?: "",
-            getString(R.string.exposure),
-            photoModel.exifModel.exposure_time ?: "",
-            getString(R.string.aperture),
-            photoModel.exifModel.aperture,
-            getString(R.string.focel_length),
-            photoModel.exifModel.focal_length,
-            photoModel.exifModel.iso
-        )
+        descriptionTextView.text = photoDetailsModel.getDescription(this)
+        nameTextView.text = photoDetailsModel.getName(this)
+        photoDetailsTextView.text = photoDetailsModel.getPhotoDetails(this)
     }
 
     private fun onErrorLoadingPhotoDetails(throwable: Throwable) {

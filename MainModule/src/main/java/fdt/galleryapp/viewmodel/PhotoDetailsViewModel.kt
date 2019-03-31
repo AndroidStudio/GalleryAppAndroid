@@ -1,7 +1,7 @@
 package fdt.galleryapp.viewmodel
 
 import android.app.Application
-import fdt.galleryapp.models.PhotoModel
+import fdt.galleryapp.models.PhotoDetailsModel
 import fdt.galleryapp.repository.photo.PhotoRepository
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.schedulers.Schedulers
@@ -14,7 +14,7 @@ class PhotoDetailsViewModel @Inject constructor(
 
     fun getPhotoDetails(
         photoId: String,
-        onPublishPhotoDetails: (PhotoModel) -> Unit,
+        onPublishPhotoDetails: (PhotoDetailsModel) -> Unit,
         onErrorLoadingPhotoDetails: (Throwable) -> Unit
     ) {
         addDisposable(
