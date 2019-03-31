@@ -22,7 +22,12 @@ open class PhotoRepository @Inject constructor(
     private val api = retrofit.create(PhotoApi::class.java)
 
     fun getPhotoList(): Flowable<List<PhotoListItemModel>> {
-        return Flowable.create(FlowableOnSubscribe<List<PhotoEntity>> { emitter ->
+        return Flowable.create(getPhotoListEmitter(), BackpressureStrategy.BUFFER)
+            .map(::mapPhotoListItem)
+    }
+
+    private fun getPhotoListEmitter(): FlowableOnSubscribe<List<PhotoEntity>> {
+        return FlowableOnSubscribe { emitter ->
             //Get photo list from database
             var photoList: List<PhotoEntity>? = null
             emitter.setDisposable(
@@ -43,7 +48,7 @@ open class PhotoRepository @Inject constructor(
                     }
                 }
             )
-        }, BackpressureStrategy.BUFFER).map(::mapPhotoListItem)
+        }
     }
 
     /**
