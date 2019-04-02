@@ -58,7 +58,6 @@ open class PhotoRepository @Inject constructor(
             .map { list ->
                 list.map { PhotoEntity(it) }.also { appDatabase.photoQuery().insertPhotoList(it) }
             }
-        //TODO simplify to many mapping...
     }
 
     private fun getPhotoListFromDatabase(): Single<List<PhotoEntity>> {

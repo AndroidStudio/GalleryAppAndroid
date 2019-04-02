@@ -53,7 +53,7 @@ import java.io.ByteArrayOutputStream
 import javax.inject.Inject
 
 @RunWith(MockitoJUnitRunner::class)
-class ApplicationTests {
+class ApplicationTest {
 
     private lateinit var appDatabase: DatabaseModule.AppDatabase
     private lateinit var databaseQuery: PhotoDatabaseQuery
@@ -94,7 +94,7 @@ class ApplicationTests {
 
         DaggerTestAppComponent.builder()
             .setApplication(context as Application)
-            .mockWebService(mockWebService)
+            .webService(mockWebService)
             .build()
             .inject(this)
     }
@@ -117,7 +117,7 @@ class ApplicationTests {
     @Test
     fun testWebServiceIncorrectJson() {
         setupRxPlugins()
-        Mockito.`when`(mockWebService.request(any())).thenReturn(Single.just(""))
+        Mockito.`when`(mockWebService.request(any())).thenReturn(Single.just("incorrect json"))
 
         photoListViewModel.getPhotoList({ }, {
             it.printStackTrace()

@@ -22,7 +22,7 @@ class PhotoDetailsModel(private val photoModel: PhotoModel) {
         photoModel.exifModel.exposure_time ?: "",
         context.getString(R.string.aperture),
         photoModel.exifModel.aperture,
-        context.getString(R.string.focel_length),
+        context.getString(R.string.focalLength),
         photoModel.exifModel.focal_length,
         photoModel.exifModel.iso
     )

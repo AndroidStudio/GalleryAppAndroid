@@ -14,7 +14,7 @@ open class WebService @Inject constructor(private val context: Context) {
         return checkInternetConnection().flatMap { request.flatMap { mapResponse(it) } }
     }
 
-    private fun checkInternetConnection(): Single<Boolean> {
+    open fun checkInternetConnection(): Single<Boolean> {
         return Single.create {
             val activeNetwork = context.connectivityManager?.activeNetworkInfo
             if (activeNetwork != null && activeNetwork.isConnected) {
@@ -25,14 +25,14 @@ open class WebService @Inject constructor(private val context: Context) {
         }
     }
 
-    private fun mapResponse(responseBody: Response<ResponseBody>): Single<String> {
+    open fun mapResponse(responseBody: Response<ResponseBody>?): Single<String> {
         return Single.create {
-            val body = responseBody.body()
-            if (responseBody.isSuccessful && body != null) {
+            val body = responseBody?.body()
+            if (body != null && responseBody.isSuccessful) {
                 val response = body.string()
                 it.onSuccess(response)
             } else {
-                it.onError(Exception(context.getString(R.string.connectionError) + responseBody.code()))
+                it.onError(Exception(context.getString(R.string.connectionError) + responseBody?.code()))
             }
         }
     }

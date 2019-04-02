@@ -25,12 +25,13 @@ interface TestAppComponent : AppComponent {
         fun build(): TestAppComponent
 
         @BindsInstance
-        fun mockWebService(webService: WebService): Builder
+        fun webService(webService: WebService): Builder
 
         @BindsInstance
         fun setApplication(application: Application): Builder
     }
 
-    fun inject(test: ApplicationTests)
+    fun inject(test: ApplicationTest)
+    fun inject(test: MockitoSpyTest)
 
 }
