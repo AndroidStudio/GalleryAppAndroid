@@ -37,7 +37,7 @@ class MockitoSpyTest {
 
         DaggerTestAppComponent.builder()
             .setApplication(context as Application)
-            .webService(webService)//spy web view service
+            .webService(webService)
             .build()
             .inject(this)
     }
