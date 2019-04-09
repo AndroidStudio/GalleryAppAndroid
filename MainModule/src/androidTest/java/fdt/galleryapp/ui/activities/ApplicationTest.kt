@@ -20,36 +20,31 @@ import androidx.test.espresso.matcher.ViewMatchers
 import androidx.test.espresso.matcher.ViewMatchers.*
 import androidx.test.platform.app.InstrumentationRegistry
 import androidx.test.rule.ActivityTestRule
-import com.google.gson.JsonSyntaxException
+import com.google.gson.Gson
+import com.google.gson.reflect.TypeToken
 import fdt.galleryapp.R
 import fdt.galleryapp.constants.PHOTO_DETAILS_PARAMETERS
 import fdt.galleryapp.constants.USER_FIRST_NAME
 import fdt.galleryapp.constants.USER_LAST_NAME
 import fdt.galleryapp.constants.USER_NAME
 import fdt.galleryapp.entities.PhotoEntity
+import fdt.galleryapp.models.PhotoModel
 import fdt.galleryapp.modules.DatabaseModule
 import fdt.galleryapp.parametres.PhotoDetailsParameters
 import fdt.galleryapp.repository.photo.PhotoDatabaseQuery
 import fdt.galleryapp.ui.holders.UserPhotoViewHolder
+import fdt.galleryapp.viewmodel.PhotoDetailsViewModel
 import fdt.galleryapp.viewmodel.PhotoListViewModel
 import fdt.galleryapp.webservice.WebService
 import io.reactivex.Single
-import io.reactivex.android.plugins.RxAndroidPlugins
-import io.reactivex.plugins.RxJavaPlugins
-import io.reactivex.schedulers.Schedulers
 import org.hamcrest.CoreMatchers.`is`
 import org.hamcrest.CoreMatchers.allOf
 import org.hamcrest.Matchers.equalTo
-import org.hamcrest.Matchers.instanceOf
-import org.junit.After
-import org.junit.Before
-import org.junit.Rule
-import org.junit.Test
+import org.junit.*
 import org.junit.runner.RunWith
-import org.mockito.Mock
 import org.mockito.Mockito
 import org.mockito.junit.MockitoJUnitRunner
-import java.io.ByteArrayOutputStream
+import timber.log.Timber
 import javax.inject.Inject
 
 @RunWith(MockitoJUnitRunner::class)
@@ -59,10 +54,12 @@ class ApplicationTest {
     private lateinit var databaseQuery: PhotoDatabaseQuery
 
     @Inject
+    lateinit var photoDetailsViewModel: PhotoDetailsViewModel
+
+    @Inject
     lateinit var photoListViewModel: PhotoListViewModel
 
-    @Mock
-    lateinit var mockWebService: WebService
+    lateinit var webService: WebService
 
     /*https://medium.com/@elye.project/befriending-kotlin-and-mockito-1c2e7b0ef791*/
     @Suppress("UNCHECKED_CAST")
@@ -92,9 +89,11 @@ class ApplicationTest {
     fun setupDagger() {
         val context = ApplicationProvider.getApplicationContext<Context>()
 
+        webService = Mockito.spy(WebService(context))
+
         DaggerTestAppComponent.builder()
             .setApplication(context as Application)
-            .webService(mockWebService)
+            .webService(webService)
             .build()
             .inject(this)
     }
@@ -104,43 +103,68 @@ class ApplicationTest {
         appDatabase.close()
     }
 
-    private fun setupRxPlugins() {
-        RxJavaPlugins.setIoSchedulerHandler { Schedulers.trampoline() }
-        RxAndroidPlugins.setInitMainThreadSchedulerHandler { Schedulers.trampoline() }
-    }
-
-    private fun resetRxPlugins() {
-        RxAndroidPlugins.reset()
-        RxJavaPlugins.reset()
-    }
-
     @Test
-    fun testWebServiceIncorrectJson() {
-        setupRxPlugins()
-        Mockito.`when`(mockWebService.request(any())).thenReturn(Single.just("incorrect json"))
-
-        photoListViewModel.getPhotoList({ }, {
-            it.printStackTrace()
-            assertThat(it, instanceOf(JsonSyntaxException::class.java))
-        })
-        resetRxPlugins()
+    fun testGSON() {
+        parseJson<List<PhotoModel>>()
+            .subscribe({
+                assertThat(30, `is`(it.size))
+            }, {
+                it.printStackTrace()
+            })
     }
 
-    @Test
-    fun testWebServiceResponse() {
-        setupRxPlugins()
+    private inline fun <reified T> parseJson(): Single<T> {
+        val type = object : TypeToken<T>() {}.type
         val stream = InstrumentationRegistry.getInstrumentation().context.resources.assets
             .open("photo_list.txt")
-        val expectedResponse = Single.just(stream.use { it.copyTo(ByteArrayOutputStream()) }
-            .toString())
+        val response = stream.bufferedReader().use { it.readText() }
+        return Single.create<T> {it.onSuccess(Gson().fromJson<T>(response, type)) }
+    }
 
-        Mockito.`when`(mockWebService.request(any())).thenReturn(expectedResponse)
-        photoListViewModel.getPhotoList({
-            assertThat(it[0].photoId,  `is`("kdQ1AZOUH-Y"))
-        }, {
-            it.printStackTrace()
+//
+//    @Test
+//    fun testWebService() {
+//        Mockito.`when`<Single<List<PhotoModel>>>(webService.request(any())).thenReturn(Single.create {
+//            it.onSuccess(listOf())
+//        })
+//
+//        photoListViewModel.getPhotoList({
+//            it.size
+//        },{
+//            it.printStackTrace()
+//        })
+//    }
+
+    @Test
+    fun testNoInternetConnection() {
+        val context = ApplicationProvider.getApplicationContext<Context>()
+        val message = context.getString(R.string.noInternetConnection)
+
+        Mockito.`when`(webService.verifyInternetConnection()).thenReturn(Single.create {
+            it.onError(Exception(message))
         })
-        resetRxPlugins()
+
+        photoDetailsViewModel.getPhotoDetails("", {
+            Timber.d("MockitoSpyTest %s", "success")
+        }, {
+            Assert.assertEquals(message, it.message)
+        })
+    }
+
+    @Test
+    fun testMapResponseException() {
+        val context = ApplicationProvider.getApplicationContext<Context>()
+        val message = context.getString(R.string.connectionError)
+
+        Mockito.`when`(webService.interceptResponseBody(any())).thenReturn(Single.create {
+            it.onError(Exception(message))
+        })
+
+        photoDetailsViewModel.getPhotoDetails("", {
+            Timber.d("MockitoSpyTest %s", "success")
+        }, {
+            Assert.assertEquals(message, it.message)
+        })
     }
 
     @Test

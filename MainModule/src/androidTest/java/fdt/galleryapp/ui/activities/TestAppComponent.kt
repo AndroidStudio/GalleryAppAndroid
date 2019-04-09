@@ -32,6 +32,5 @@ interface TestAppComponent : AppComponent {
     }
 
     fun inject(test: ApplicationTest)
-    fun inject(test: MockitoSpyTest)
 
 }

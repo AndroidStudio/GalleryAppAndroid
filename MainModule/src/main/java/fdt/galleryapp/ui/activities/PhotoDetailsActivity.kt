@@ -31,20 +31,21 @@ class PhotoDetailsActivity : BaseActivity() {
     }
 
     private fun getPhotoDetails() {
-        val photoDetailsParameters =
-            getExtra<PhotoDetailsParameters>(PHOTO_DETAILS_PARAMETERS)
+        val photoParameters = getExtra<PhotoDetailsParameters>(PHOTO_DETAILS_PARAMETERS)
 
-        val photoId = photoDetailsParameters?.photoId()
-        val photoUrlFull = photoDetailsParameters?.photoUrlFull()
-        val photoUrl = photoDetailsParameters?.photoUrl()
-        val photoHeight = photoDetailsParameters?.photoHeight() ?: 0
-        val photoWidth = photoDetailsParameters?.photoWidth() ?: 0
+        val photoId = photoParameters?.photoId()
+        val photoUrlFull = photoParameters?.photoUrlFull()
+        val photoUrl = photoParameters?.photoUrl()
+        val photoHeight = photoParameters?.photoHeight()
+        val photoWidth = photoParameters?.photoWidth()
 
         if (photoId == null
-            || photoUrl == null
-            || photoUrlFull == null
-            || photoHeight == 0
-            || photoWidth == 0
+                || photoUrl == null
+                || photoUrlFull == null
+                || photoHeight == null
+                || photoWidth == null
+                || photoHeight == 0
+                || photoWidth == 0
         ) {
             showErrorMessage(getString(R.string.unableToDisplayPhotoDetails))
             return

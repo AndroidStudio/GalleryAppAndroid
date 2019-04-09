@@ -1,6 +1,5 @@
 package fdt.galleryapp.repository.user
 
-import com.google.gson.Gson
 import fdt.galleryapp.models.PhotoModel
 import fdt.galleryapp.webservice.WebService
 import io.reactivex.Single
@@ -12,7 +11,8 @@ class UserPhotoRepository @Inject constructor(private var webService: WebService
     private val api = retrofit.create(UserPhotoApi::class.java)
 
     fun getUserPhotoListRemote(username: String): Single<List<PhotoModel>> {
-        return webService.request(api.getUserPhoto(username, 30, "popular"))
-            .map { Gson().fromJson(it, Array<PhotoModel>::class.java).toList() }
+        return webService.request(
+            api.getUserPhoto(username, 30, "popular")
+        )
     }
 }

@@ -24,3 +24,12 @@ inline val Context.connectivityManager: ConnectivityManager?
 inline fun <reified T> AppCompatActivity.getExtra(key: String): T? {
     return intent?.extras?.get(key) as? T ?: return null
 }
+
+fun <T> notNull(vararg elements: T): Boolean {
+    elements.forEach {
+        if (it == null) {
+            return false
+        }
+    }
+    return true
+}

@@ -1,6 +1,5 @@
 package fdt.galleryapp.repository.photo
 
-import com.google.gson.Gson
 import fdt.galleryapp.entities.PhotoEntity
 import fdt.galleryapp.models.PhotoModel
 import fdt.galleryapp.models.decorators.PhotoDetailsModel
@@ -53,8 +52,7 @@ open class PhotoRepository @Inject constructor(
     }
 
     private fun getPhotoListRemote(): Single<List<PhotoEntity>> {
-        return webService.request(api.getPhotoList(30, "popular"))
-            .map { Gson().fromJson(it, Array<PhotoModel>::class.java).toList() }
+        return webService.request<List<PhotoModel>>(api.getPhotoList(30, "popular"))
             .map { list ->
                 list.map { PhotoEntity(it) }.also { appDatabase.photoQuery().insertPhotoList(it) }
             }
@@ -69,8 +67,7 @@ open class PhotoRepository @Inject constructor(
     }
 
     fun getPhotoDetailsRemote(photoId: String): Single<PhotoDetailsModel> {
-        return webService.request(api.getPhotoDetails(photoId))
-            .map { Gson().fromJson(it, PhotoModel::class.java) }
+        return webService.request<PhotoModel>(api.getPhotoDetails(photoId))
             .map { PhotoDetailsModel(it) }
     }
 }
