@@ -13,13 +13,13 @@ import fdt.galleryapp.ui.activities.UserPhotoListActivity
 object Navigation {
 
     fun startPhotoDetailsActivity(
-        view: View, context: AppCompatActivity,
+        sharedElement: View, context: AppCompatActivity,
         photoDetailsParameters: PhotoDetailsParameters
     ) {
         context.launchActivity(
             PhotoDetailsActivity::class.java, { putExtra(PHOTO_DETAILS_PARAMETERS, photoDetailsParameters) },
             ActivityOptionsCompat.makeSceneTransitionAnimation(
-                context, view, "photo_image"
+                context, sharedElement, "photo_image"
             ).toBundle()
         )
     }
@@ -36,21 +36,21 @@ object Navigation {
                 putExtra(USER_NAME, username)
                 putExtra(USER_LAST_NAME, userLastName)
                 putExtra(USER_FIRST_NAME, userFirstName)
-            }, null
+            }
         )
     }
 
-    fun startPhotoFullActivity(view: View, context: AppCompatActivity, photoUrlFull: String?) {
+    fun startPhotoFullActivity(sharedElement: View, context: AppCompatActivity, photoUrlFull: String?) {
         context.launchActivity(
             FullPhotoActivity::class.java,
             { putExtra(PHOTO_URL_FULL, photoUrlFull) },
             ActivityOptionsCompat.makeSceneTransitionAnimation(
-                context, view, "photo_image"
+                context, sharedElement, "photo_image"
             ).toBundle()
         )
     }
 
     fun startPhotoListActivity(context: AppCompatActivity) {
-        context.launchActivity(PhotoListActivity::class.java, {}, null)
+        context.launchActivity(PhotoListActivity::class.java, {})
     }
 }

@@ -17,7 +17,7 @@ class GalleryApplication : Application(), HasActivityInjector {
 
     override fun onCreate() {
         super.onCreate()
-        AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_AUTO)
+        AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_FOLLOW_SYSTEM)
 
         DaggerAppComponent.builder()
             .setApplication(this)

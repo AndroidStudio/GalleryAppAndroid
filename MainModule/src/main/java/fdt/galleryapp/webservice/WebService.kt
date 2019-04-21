@@ -16,7 +16,7 @@ open class WebService @Inject constructor(private val context: Context) {
     inline fun <reified T> request(request: Single<Response<ResponseBody>>): Single<T> {
         val responseType = object : TypeToken<T>() {}.type
         return verifyInternetConnection()
-            .andThen(request.flatMap { interceptResponseBody(it) })
+            .andThen(interceptResponseBody(request))
             .flatMap { Single.just(Gson().fromJson<T>(it, responseType)) }
     }
 
@@ -30,14 +30,16 @@ open class WebService @Inject constructor(private val context: Context) {
         }
     }
 
-    open fun interceptResponseBody(responseBody: Response<ResponseBody>?): Single<String> {
-        return Single.create {
-            val body = responseBody?.body()
-            if (body != null && responseBody.isSuccessful) {
-                val response = body.string()
-                it.onSuccess(response)
-            } else {
-                it.onError(Exception(context.getString(R.string.connectionError) + responseBody?.code()))
+    open fun interceptResponseBody(request: Single<Response<ResponseBody>>): Single<String> {
+        return request.flatMap { responseBody: Response<ResponseBody>? ->
+            Single.create<String> {
+                val body = responseBody?.body()
+                if (body != null && responseBody.isSuccessful) {
+                    val response = body.string()
+                    it.onSuccess(response)
+                } else {
+                    it.onError(Exception(context.getString(R.string.connectionError) + responseBody?.code()))
+                }
             }
         }
     }
